@@ -198,7 +198,7 @@ function ResultadoSinCobertura({ resultado }) {
             rel="noopener noreferrer"
             className="mt-4 inline-block rounded-lg bg-white px-4 py-2 text-xs font-extrabold text-slate-800 shadow-sm transition hover:bg-slate-50 focus-visible:ring-2 focus-visible:ring-orange-400 focus-visible:ring-offset-2 focus-visible:outline-none"
           >
-            Ver producto <span aria-hidden="true">→</span>
+            Comprar <span aria-hidden="true">→</span>
           </a>
         </div>
       )}
@@ -239,7 +239,7 @@ function TuMejorOpcion({ recomendacion, requirement }) {
   return (
     <article
       aria-labelledby="mejor-opcion-titulo"
-      className="relative flex flex-col overflow-hidden rounded-4xl bg-slate-100 shadow-2xl shadow-slate-300/50"
+      className="relative flex min-w-0 max-w-full flex-col overflow-hidden rounded-4xl bg-slate-100 shadow-2xl shadow-slate-300/50"
     >
       {/* Badge del catálogo, tal cual. El motor nunca genera etiquetas comerciales. */}
       <div className="pointer-events-none absolute top-2 left-2 z-10 -rotate-6 rounded-md border border-white bg-orange-500 px-2.5 py-1 text-[10px] font-extrabold text-white shadow-md sm:top-3 sm:left-3">
@@ -248,7 +248,7 @@ function TuMejorOpcion({ recomendacion, requirement }) {
 
       <GaleriaProducto key={product.id} imagenes={[...product.imagenes]} alt={product.nombre} />
 
-      <div className="border-t border-slate-200 bg-white px-5 py-6 sm:px-6">
+      <div className="min-w-0 border-t border-slate-200 bg-white px-5 py-6 sm:px-6">
         <p className="text-[10px] font-extrabold tracking-[0.18em] text-orange-600 uppercase">Tu mejor opción</p>
 
         <h3
@@ -277,9 +277,9 @@ function TuMejorOpcion({ recomendacion, requirement }) {
 
         <dl className="mt-6 divide-y divide-slate-100 border-y border-slate-100">
           {filas.map((fila) => (
-            <div key={fila.etiqueta} className="flex items-baseline justify-between gap-4 py-2.5">
+            <div key={fila.etiqueta} className="flex min-w-0 flex-wrap items-baseline justify-between gap-x-4 gap-y-1 py-2.5">
               <dt className="text-xs font-medium text-slate-500">{fila.etiqueta}</dt>
-              <dd className="text-right text-sm font-bold text-slate-900">{fila.valor}</dd>
+              <dd className="min-w-0 max-w-full text-right text-sm font-bold break-words text-slate-900">{fila.valor}</dd>
             </div>
           ))}
         </dl>
@@ -346,7 +346,7 @@ function Alternativas({ alternativas, mejor }) {
           return (
             <article
               key={product.id}
-              className="flex gap-4 rounded-3xl border border-slate-200 bg-white p-4 shadow-[0_10px_30px_rgba(15,23,42,0.04)]"
+              className="flex min-w-0 gap-4 rounded-3xl border border-slate-200 bg-white p-4 shadow-[0_10px_30px_rgba(15,23,42,0.04)]"
             >
               {product.imagen && (
                 <img
@@ -362,8 +362,8 @@ function Alternativas({ alternativas, mejor }) {
                 <span className="inline-block rounded-full bg-orange-50 px-2.5 py-1 text-[10px] font-extrabold tracking-wide text-orange-700 uppercase">
                   {diferencia.label}
                 </span>
-                <p className="mt-2 text-sm leading-snug font-extrabold text-slate-950">{product.nombre}</p>
-                <p className="mt-1 text-[11px] leading-relaxed text-slate-500">{diferencia.detail}</p>
+                <p className="mt-2 text-sm leading-snug font-extrabold break-words text-slate-950">{product.nombre}</p>
+                <p className="mt-1 text-[11px] leading-relaxed break-words text-slate-500">{diferencia.detail}</p>
 
                 <div className="mt-3 flex flex-wrap items-baseline justify-between gap-2">
                   <span className="text-lg font-extrabold tracking-[-0.04em] text-slate-950">{product.precio}</span>
@@ -427,10 +427,10 @@ function FichaTecnica({ product }) {
             {product.specifications.datasheet.map((caracteristica) => (
               <div
                 key={caracteristica.etiqueta}
-                className="grid grid-cols-[minmax(0,0.8fr)_minmax(0,1.2fr)] gap-4 py-4 text-sm"
+                className="grid min-w-0 grid-cols-[minmax(0,0.8fr)_minmax(0,1.2fr)] gap-4 py-4 text-sm"
               >
                 <dt className="font-medium text-slate-500">{caracteristica.etiqueta}</dt>
-                <dd className="font-bold text-slate-900">{caracteristica.valor}</dd>
+                <dd className="min-w-0 break-words font-bold text-slate-900">{caracteristica.valor}</dd>
               </div>
             ))}
           </dl>
@@ -473,7 +473,7 @@ export default function Calculadora() {
 
   return (
     <section className="mx-auto max-w-7xl px-5 lg:px-10">
-      <div className="grid items-start gap-6 lg:grid-cols-2 lg:gap-8">
+      <div className="grid min-w-0 items-start gap-6 lg:grid-cols-2 lg:gap-8">
         {/* ---------------------------------------------------- Asistente */}
         <form
           onSubmit={alSubir}
@@ -597,7 +597,7 @@ export default function Calculadora() {
         </form>
 
         {/* ---------------------------------------------------- Resultado */}
-        <div ref={panelResultado} aria-live="polite" aria-atomic="false">
+        <div ref={panelResultado} className="min-w-0" aria-live="polite" aria-atomic="false">
           {!resultado && <ResultadoPendiente />}
           {resultado && buscando && <ResultadoBuscando duracionMs={SEARCH_FEEDBACK_MS} totalProductos={CATALOG_SIZE} />}
           {mostrandoResultado && !recomendacion && <ResultadoSinCobertura resultado={resultado} />}

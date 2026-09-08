@@ -1,6 +1,7 @@
 ---
 import '../styles/global.css';
 import Calculadora from '../components/Calculadora.jsx';
+import CatalogoProductos from '../components/CatalogoProductos.astro';
 import Analytics from '@vercel/analytics/astro';
 
 const titulo = 'LadderLand | Encuentra tu escalera ideal';
@@ -41,18 +42,46 @@ const anio = new Date().getFullYear();
 
     <main>
       <section class="overflow-hidden bg-white">
-        <div class="mx-auto max-w-7xl px-5 pt-10 pb-8 lg:px-10 lg:pt-14 lg:pb-10">
-          <p class="text-xs font-extrabold tracking-[0.2em] text-orange-600 uppercase">La decisión inteligente empieza aquí</p>
-          <h1 class="mt-4 max-w-4xl text-4xl font-extrabold leading-[1.08] tracking-[-0.055em] text-slate-950 sm:text-5xl lg:text-6xl">
-            Alcanza cualquier altura <span class="text-orange-500">sin perder el equilibrio</span>
-          </h1>
-          <p class="mt-4 max-w-2xl text-base font-medium leading-relaxed text-slate-600 sm:text-lg">
-            La única decisión en tu vida donde querrás mantenerte firme.
-          </p>
+        <div class="mx-auto grid max-w-7xl gap-10 px-5 py-10 lg:grid-cols-[1.25fr_0.75fr] lg:items-center lg:gap-16 lg:px-10 lg:py-12">
+          <div class="min-w-0">
+            <p class="text-xs font-extrabold tracking-[0.2em] text-orange-600 uppercase">Escaleras multifuncionales</p>
+            <h1 class="mt-4 max-w-2xl text-4xl font-extrabold leading-[1.08] tracking-[-0.055em] text-slate-950 sm:text-5xl lg:text-6xl">
+              Alcanza cualquier altura <span class="text-orange-500">sin perder el equilibrio</span>
+            </h1>
+            <p class="mt-4 max-w-2xl text-base font-medium leading-relaxed text-slate-600 sm:text-lg">
+              La única decisión en tu vida donde querrás mantenerte firme.
+            </p>
+          </div>
+
+          <a
+            href="#calculadora"
+            aria-label="Encuentra tu escalera ideal: ir a la calculadora"
+            class="group min-w-0 rounded-3xl border border-slate-200 bg-slate-50 p-6 shadow-[0_18px_45px_rgba(15,23,42,0.07)] transition duration-300 hover:-translate-y-1 hover:border-orange-200 hover:shadow-[0_22px_55px_rgba(15,23,42,0.1)] focus-visible:ring-2 focus-visible:ring-orange-400 focus-visible:ring-offset-4 focus-visible:outline-none sm:p-7"
+          >
+            <p class="text-[10px] font-extrabold tracking-[0.2em] text-orange-600 uppercase">Encuentra tu escalera</p>
+            <p class="mt-3 max-w-sm text-lg font-extrabold leading-snug tracking-[-0.03em] text-slate-950">
+              Te hacemos 3 preguntas y encontramos el modelo que mejor encaja contigo.
+            </p>
+
+            <ol class="mt-6 grid grid-cols-3 gap-2 border-y border-slate-200 py-4">
+              <li class="text-xs font-bold text-slate-700"><span class="block text-[10px] font-extrabold text-orange-500">01</span>Altura</li>
+              <li class="text-xs font-bold text-slate-700"><span class="block text-[10px] font-extrabold text-orange-500">02</span>Trabajo</li>
+              <li class="text-xs font-bold text-slate-700"><span class="block text-[10px] font-extrabold text-orange-500">03</span>Recomendación</li>
+            </ol>
+
+            <span class="mt-5 inline-flex items-center gap-2 text-sm font-extrabold text-slate-900">
+              Encuentra tu escalera
+              <span class="transition-transform duration-300 group-hover:translate-x-1" aria-hidden="true">→</span>
+            </span>
+          </a>
         </div>
       </section>
 
-      <Calculadora client:load />
+      <CatalogoProductos />
+
+      <div id="calculadora" class="scroll-mt-6">
+        <Calculadora client:load />
+      </div>
 
       <article class="prose prose-slate mx-auto mt-20 max-w-4xl px-5 text-slate-600 leading-relaxed prose-headings:tracking-[-0.03em] prose-headings:text-slate-950 prose-strong:text-slate-800 lg:mt-28">
         <h2>¿Cómo calcular la altura de una escalera extensible de forma segura?</h2>

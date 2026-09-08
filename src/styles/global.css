@@ -6,6 +6,10 @@
 	font-family: 'Plus Jakarta Sans', sans-serif;
 }
 
+html {
+	scroll-behavior: smooth;
+}
+
 body {
 	font-family: inherit;
 }
@@ -88,6 +92,10 @@ body {
 }
 
 @media (prefers-reduced-motion: reduce) {
+	html {
+		scroll-behavior: auto;
+	}
+
 	.ll-entrada,
 	.ll-latido,
 	.ll-barrido::after,
