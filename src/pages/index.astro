@@ -1,6 +1,7 @@
 ---
 import '../styles/global.css';
 import Calculadora from '../components/Calculadora.jsx';
+import Analytics from '@vercel/analytics/astro';
 
 const titulo = 'LadderLand | Encuentra tu escalera ideal';
 const descripcion =
@@ -166,5 +167,7 @@ const anio = new Date().getFullYear();
         </p>
       </div>
     </footer>
+
+    <Analytics />
   </body>
 </html>
