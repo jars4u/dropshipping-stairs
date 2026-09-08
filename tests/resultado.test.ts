@@ -24,7 +24,11 @@ const TEENO = 1;
 const TECTAKE = 2;
 const DRABEST = 3;
 
-const resultadoPara = (altura: number, task = TaskType.ACCESO, environment = EnvironmentType.INTERIOR) =>
+const resultadoPara = (
+  altura: number,
+  task: TaskType = TaskType.ACCESO,
+  environment: EnvironmentType = EnvironmentType.INTERIOR
+) =>
   runRecommendation(
     submit(setEnvironment(setTask(setTargetHeight(createInitialFlowState(), altura), task), environment))
   )!;

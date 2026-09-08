@@ -442,7 +442,7 @@ function scoreHeight(height: HeightEvidence): ScoreFactor {
   return { key: 'height', weight: SCORE_WEIGHTS.height, value: height.fit, weighted: 0, detail };
 }
 
-function scoreTask(product: Product, configuration: Configuration | null, scenario: Scenario): ScoreFactor {
+function scoreTask(configuration: Configuration | null, scenario: Scenario): ScoreFactor {
   let value = 0.5;
   let detail = 'El producto no declara tareas compatibles: factor neutro.';
 
@@ -797,7 +797,7 @@ export function recommendLadder(scenario: Scenario, products: readonly Product[]
     const configuration = selectConfiguration(product, scenario);
     const breakdown = buildBreakdown([
       scoreHeight(height),
-      scoreTask(product, configuration, scenario),
+      scoreTask(configuration, scenario),
       scoreEnvironment(product, scenario),
       scoreVersatility(product, contexto),
       scorePrice(product, contexto)

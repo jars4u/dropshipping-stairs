@@ -23,8 +23,8 @@ const DRABEST = 3;
 
 const escenario = (
   targetHeight: number,
-  task = TaskType.ACCESO,
-  environment = EnvironmentType.INTERIOR,
+  task: TaskType = TaskType.ACCESO,
+  environment: EnvironmentType = EnvironmentType.INTERIOR,
   extra: Partial<Scenario> = {}
 ): Scenario => ({ targetHeight, task, environment, ...extra });
 

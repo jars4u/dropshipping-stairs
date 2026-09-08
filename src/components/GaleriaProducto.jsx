@@ -4,6 +4,7 @@ export default function GaleriaProducto({ imagenes = [], alt = 'Imagen del produ
   const [imagenSeleccionada, setImagenSeleccionada] = useState(imagenes[0] ?? '');
   const [modalAbierto, setModalAbierto] = useState(false);
   const [cargandoImagen, setCargandoImagen] = useState(true);
+  const [imagenRota, setImagenRota] = useState(false);
   const imagenPrincipal = useRef(null);
 
   useEffect(() => {
@@ -16,6 +17,7 @@ export default function GaleriaProducto({ imagenes = [], alt = 'Imagen del produ
     // navegador ya la tenga en caché: entonces `complete` es true antes de que
     // React llegue a enganchar el onLoad y no habría evento que esperar.
     setCargandoImagen(!imagenPrincipal.current?.complete);
+    setImagenRota(false);
   }, [imagenSeleccionada]);
 
   useEffect(() => {
@@ -47,16 +49,26 @@ export default function GaleriaProducto({ imagenes = [], alt = 'Imagen del produ
           className="relative flex aspect-4/3 w-full cursor-zoom-in items-center justify-center overflow-hidden rounded-none border-0 bg-white focus:ring-2 focus:ring-orange-400 focus:ring-offset-2 focus:outline-none"
           aria-label="Ampliar imagen del producto"
         >
-          {cargandoImagen && <span className="ll-barrido absolute inset-0 overflow-hidden bg-slate-100" aria-hidden="true" />}
-          <img
-            ref={imagenPrincipal}
-            src={imagenSeleccionada}
-            alt={alt}
-            decoding="async"
-            onLoad={() => setCargandoImagen(false)}
-            onError={() => setCargandoImagen(false)}
-            className={`h-full w-full object-contain transition-opacity duration-300 ${cargandoImagen ? 'opacity-0' : 'opacity-100'}`}
-          />
+          {cargandoImagen && !imagenRota && (
+            <span className="ll-barrido absolute inset-0 overflow-hidden bg-slate-100" aria-hidden="true" />
+          )}
+          {imagenRota ? (
+            // La imagen no ha cargado: se dice, en vez de dejar el icono roto.
+            <span className="px-6 text-center text-xs font-semibold text-slate-500">Imagen no disponible</span>
+          ) : (
+            <img
+              ref={imagenPrincipal}
+              src={imagenSeleccionada}
+              alt={alt}
+              decoding="async"
+              onLoad={() => setCargandoImagen(false)}
+              onError={() => {
+                setCargandoImagen(false);
+                setImagenRota(true);
+              }}
+              className={`h-full w-full object-contain transition-opacity duration-300 ${cargandoImagen ? 'opacity-0' : 'opacity-100'}`}
+            />
+          )}
         </button>
 
         <div className="mt-4 flex gap-3 overflow-x-auto pb-2" aria-label="Galería de imágenes del producto">

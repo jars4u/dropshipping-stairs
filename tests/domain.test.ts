@@ -17,6 +17,7 @@ test('un dato no declarado queda como UNKNOWN, no como 0 ni undefined', () => {
 });
 
 test('los enums rechazan strings arbitrarios', () => {
+  // @ts-expect-error: pasar un tipo invalido es justo lo que se comprueba.
   assert.throws(() => createConfiguration({ id: 'x', name: 'X', type: 'andamio-volador' }), /ConfigurationType/);
   assert.throws(() => configuracionMinima({ supportedTasks: ['pintar'] }), /supportedTasks/);
   assert.throws(() => configuracionMinima({ supportedEnvironments: ['garaje'] }), /supportedEnvironments/);

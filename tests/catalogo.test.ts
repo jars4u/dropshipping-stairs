@@ -3,8 +3,16 @@ import assert from 'node:assert/strict';
 
 import { catalogo } from '../src/data/catalogo.ts';
 import { ConfigurationType, EnvironmentType, TaskType, UNKNOWN } from '../src/domain/types.ts';
+import type { Configuration, Product } from '../src/domain/product.ts';
 
-const porId = (id) => catalogo.find((producto) => producto.id === id);
+/** Falla en vez de devolver undefined: un id que no existe es un error del test. */
+const porId = (id: number): Product => {
+  const producto = catalogo.find((candidato) => candidato.id === id);
+  if (!producto) throw new Error('El producto ' + id + ' no esta en el catalogo');
+  return producto;
+};
+
+const MEDIDAS = ['maxWorkHeight', 'maxLadderLength', 'maxPlatformHeight'] as const;
 
 /**
  * Identidad comercial: lo único que NO puede cambiar nunca sin decisión de
@@ -172,9 +180,12 @@ test('las alturas son exactamente las que declara cada ficha', () => {
 });
 
 test('longitud de escalera y altura de trabajo no se confunden', () => {
-  const drabest = porId(3);
-  assert.notEqual(drabest.capabilities.maxLadderLength, drabest.capabilities.maxWorkHeight);
-  assert.ok(drabest.capabilities.maxWorkHeight > drabest.capabilities.maxLadderLength);
+  const { maxLadderLength, maxWorkHeight } = porId(3).capabilities;
+  if (maxLadderLength === UNKNOWN || maxWorkHeight === UNKNOWN) {
+    throw new Error('DRABEST debe declarar ambas magnitudes');
+  }
+  assert.notEqual(maxLadderLength, maxWorkHeight);
+  assert.ok(maxWorkHeight > maxLadderLength);
   // Y el único que declara altura de trabajo es DRABEST.
   assert.equal(catalogo.filter((p) => p.capabilities.maxWorkHeight !== UNKNOWN).length, 1);
 });
@@ -182,7 +193,7 @@ test('longitud de escalera y altura de trabajo no se confunden', () => {
 test('las alturas vienen del producto, no de una configuración', () => {
   for (const producto of catalogo) {
     for (const configuracion of producto.configurations) {
-      for (const campo of ['maxWorkHeight', 'maxLadderLength', 'maxPlatformHeight']) {
+      for (const campo of MEDIDAS) {
         assert.equal(configuracion[campo], UNKNOWN, configuracion.id + '.' + campo);
       }
     }
@@ -198,12 +209,16 @@ test('las tareas soportadas se corresponden con el tipo de configuración', () =
 });
 
 test('no se inventan capacidades: sólo son números las medidas declaradas', () => {
-  const declaradas = [];
+  const declaradas: [number, string, string, number][] = [];
   for (const producto of catalogo) {
-    const fuentes = [['producto', producto.declaredCapabilities], ...producto.configurations.map((c) => [c.id, c])];
+    const fuentes: [string, Record<(typeof MEDIDAS)[number], number | null>][] = [
+      ['producto', producto.declaredCapabilities],
+      ...producto.configurations.map((configuracion): [string, Configuration] => [configuracion.id, configuracion])
+    ];
     for (const [origen, fuente] of fuentes) {
-      for (const campo of ['maxWorkHeight', 'maxLadderLength', 'maxPlatformHeight']) {
-        if (fuente[campo] !== UNKNOWN) declaradas.push([producto.id, origen, campo, fuente[campo]]);
+      for (const campo of MEDIDAS) {
+        const valor = fuente[campo];
+        if (valor !== UNKNOWN) declaradas.push([producto.id, origen, campo, valor]);
       }
     }
   }
@@ -220,7 +235,9 @@ test('no se inventan capacidades: ninguna ficha declara altura de plataforma', (
     assert.equal(producto.capabilities.maxPlatformHeight, UNKNOWN, producto.nombre);
   }
   // TecTake declara las medidas de la plataforma, pero no a qué altura queda.
-  assert.equal(porId(2).specifications.platform.heightM, UNKNOWN);
+  const plataforma = porId(2).specifications.platform;
+  if (plataforma === UNKNOWN) throw new Error('TecTake debe declarar las medidas de su plataforma');
+  assert.equal(plataforma.heightM, UNKNOWN);
 });
 
 test('no se inventan capacidades: ningún producto declara entornos compatibles', () => {
@@ -235,7 +252,7 @@ test('no se inventan capacidades: ningún producto declara entornos compatibles'
 });
 
 test('la ficha técnica visible no contradice a las specs estructuradas', () => {
-  const valorDe = (producto, etiqueta) =>
+  const valorDe = (producto: Product, etiqueta: string): string | undefined =>
     producto.specifications.datasheet.find((fila) => fila.etiqueta === etiqueta)?.valor;
 
   assert.equal(valorDe(porId(1), 'Peso'), '26 kg');
@@ -254,9 +271,11 @@ test('la ficha técnica visible no contradice a las specs estructuradas', () => 
 
 test('el catálogo es inmutable', () => {
   assert.throws(() => {
-    catalogo.push({});
+    // @ts-expect-error: empujar sobre un array congelado es justo lo que se comprueba.
+    catalogo.push(porId(1));
   });
   assert.throws(() => {
+    // @ts-expect-error: escribir una capacidad de solo lectura es justo lo que se comprueba.
     porId(1).capabilities.maxWorkHeight = 9;
   });
 });

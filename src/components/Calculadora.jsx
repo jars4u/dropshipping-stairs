@@ -1,5 +1,6 @@
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { Component, useEffect, useMemo, useRef, useState } from 'react';
 import GaleriaProducto from './GaleriaProducto.jsx';
+import { CalculatorEvent, ClickPosition, trackCalculator } from '../lib/analytics.ts';
 import {
   CATALOG_SIZE,
   HEIGHT_RANGE,
@@ -26,6 +27,32 @@ import {
 const OPCIONES_TAREA = taskOptions();
 const OPCIONES_ENTORNO = environmentOptions();
 const ENTORNO_DECLARADO_POR_FABRICANTE = environmentCompatibilityIsDeclared();
+
+/** El slider dispara un cambio por píxel: se espera a que la mano se pare. */
+const ANALYTICS_HEIGHT_DEBOUNCE_MS = 700;
+
+/**
+ * Red de seguridad de render. Si algo revienta pintando el resultado, la página
+ * sigue en pie y la persona conserva el catálogo de más abajo.
+ */
+class LimiteDeError extends Component {
+  constructor(props) {
+    super(props);
+    this.state = { fallo: false };
+  }
+
+  static getDerivedStateFromError() {
+    return { fallo: true };
+  }
+
+  componentDidCatch(error) {
+    if (import.meta.env.DEV) console.error('Calculadora:', error);
+  }
+
+  render() {
+    return this.state.fallo ? this.props.fallback : this.props.children;
+  }
+}
 
 /** Paso numerado del asistente. */
 function Paso({ numero, titulo, subtexto, children }) {
@@ -107,6 +134,43 @@ function TarjetaOpcion({ name, opcion, seleccionada, onSelect }) {
   );
 }
 
+/**
+ * Único punto por el que se sale hacia Amazon: centraliza el evento de click y
+ * el caso de producto sin ASIN, que nunca debe pintarse como enlace muerto.
+ */
+function EnlaceProducto({ product, position, className, children }) {
+  if (!product.asin) {
+    return (
+      <span
+        className={`${className} cursor-not-allowed opacity-60`}
+        role="link"
+        aria-disabled="true"
+        title="Este modelo no tiene ficha de compra disponible"
+      >
+        No disponible ahora mismo
+      </span>
+    );
+  }
+
+  return (
+    <a
+      href={construirUrlAfiliado(product.asin)}
+      target="_blank"
+      rel="noopener noreferrer"
+      onClick={() =>
+        trackCalculator(CalculatorEvent.PRODUCT_CLICKED, {
+          product_id: product.id,
+          product_asin: product.asin,
+          position
+        })
+      }
+      className={className}
+    >
+      {children}
+    </a>
+  );
+}
+
 /** Panel de la derecha antes de pedir la recomendación. */
 function ResultadoPendiente() {
   return (
@@ -117,6 +181,19 @@ function ResultadoPendiente() {
       <p className="mt-5 text-sm font-extrabold text-slate-800">Aquí verás tu recomendación</p>
       <p className="mx-auto mt-2 max-w-xs text-xs leading-relaxed text-slate-500">
         Responde las tres preguntas y pulsa «Ver mi recomendación». Podrás cambiar cualquier respuesta después.
+      </p>
+    </div>
+  );
+}
+
+/** Algo ha fallado calculando o pintando: la página no se cae con ello. */
+function ResultadoError() {
+  return (
+    <div className="rounded-4xl border border-slate-200 bg-white p-8 text-center">
+      <p className="text-sm font-extrabold text-slate-800">No hemos podido calcular tu recomendación</p>
+      <p className="mx-auto mt-2 max-w-xs text-xs leading-relaxed text-slate-500">
+        Cambia alguna respuesta y vuelve a intentarlo. También puedes ver todos los modelos en «Nuestros productos», más
+        abajo.
       </p>
     </div>
   );
@@ -192,14 +269,13 @@ function ResultadoSinCobertura({ resultado }) {
           <p className="text-xs font-bold text-amber-900">Lo más cerca que tenemos</p>
           <p className="mt-2 text-sm font-extrabold text-slate-950">{closest.product.nombre}</p>
           <p className="mt-1 text-xs leading-relaxed text-slate-600">{closest.text}</p>
-          <a
-            href={construirUrlAfiliado(closest.product.asin)}
-            target="_blank"
-            rel="noopener noreferrer"
+          <EnlaceProducto
+            product={closest.product}
+            position={ClickPosition.CLOSEST}
             className="mt-4 inline-block rounded-lg bg-white px-4 py-2 text-xs font-extrabold text-slate-800 shadow-sm transition hover:bg-slate-50 focus-visible:ring-2 focus-visible:ring-orange-400 focus-visible:ring-offset-2 focus-visible:outline-none"
           >
-            Comprar <span aria-hidden="true">→</span>
-          </a>
+            Ver producto <span aria-hidden="true">→</span>
+          </EnlaceProducto>
         </div>
       )}
     </div>
@@ -239,7 +315,7 @@ function TuMejorOpcion({ recomendacion, requirement }) {
   return (
     <article
       aria-labelledby="mejor-opcion-titulo"
-      className="relative flex min-w-0 max-w-full flex-col overflow-hidden rounded-4xl bg-slate-100 shadow-2xl shadow-slate-300/50"
+      className="relative flex flex-col overflow-hidden rounded-4xl bg-slate-100 shadow-2xl shadow-slate-300/50"
     >
       {/* Badge del catálogo, tal cual. El motor nunca genera etiquetas comerciales. */}
       <div className="pointer-events-none absolute top-2 left-2 z-10 -rotate-6 rounded-md border border-white bg-orange-500 px-2.5 py-1 text-[10px] font-extrabold text-white shadow-md sm:top-3 sm:left-3">
@@ -248,7 +324,7 @@ function TuMejorOpcion({ recomendacion, requirement }) {
 
       <GaleriaProducto key={product.id} imagenes={[...product.imagenes]} alt={product.nombre} />
 
-      <div className="min-w-0 border-t border-slate-200 bg-white px-5 py-6 sm:px-6">
+      <div className="border-t border-slate-200 bg-white px-5 py-6 sm:px-6">
         <p className="text-[10px] font-extrabold tracking-[0.18em] text-orange-600 uppercase">Tu mejor opción</p>
 
         <h3
@@ -263,23 +339,22 @@ function TuMejorOpcion({ recomendacion, requirement }) {
           <IndicadorCoincidencia match={match} />
         </div>
 
-        <a
-          href={construirUrlAfiliado(product.asin)}
-          target="_blank"
-          rel="noopener noreferrer"
+        <EnlaceProducto
+          product={product}
+          position={ClickPosition.BEST}
           className="mt-5 block w-full rounded-xl bg-orange-500 px-6 py-4 text-center text-base font-extrabold text-white shadow-xl shadow-orange-500/20 transition hover:bg-orange-600 focus-visible:ring-2 focus-visible:ring-orange-400 focus-visible:ring-offset-2 focus-visible:outline-none"
         >
           Ver producto <span aria-hidden="true">→</span>
-        </a>
+        </EnlaceProducto>
         <p className="mt-2 text-center text-[11px] text-slate-400">
           Precio y disponibilidad sujetos a actualización en Amazon.
         </p>
 
         <dl className="mt-6 divide-y divide-slate-100 border-y border-slate-100">
           {filas.map((fila) => (
-            <div key={fila.etiqueta} className="flex min-w-0 flex-wrap items-baseline justify-between gap-x-4 gap-y-1 py-2.5">
+            <div key={fila.etiqueta} className="flex items-baseline justify-between gap-4 py-2.5">
               <dt className="text-xs font-medium text-slate-500">{fila.etiqueta}</dt>
-              <dd className="min-w-0 max-w-full text-right text-sm font-bold break-words text-slate-900">{fila.valor}</dd>
+              <dd className="text-right text-sm font-bold text-slate-900">{fila.valor}</dd>
             </div>
           ))}
         </dl>
@@ -324,6 +399,24 @@ function TuMejorOpcion({ recomendacion, requirement }) {
   );
 }
 
+/** Miniatura de alternativa que se retira sola si la imagen no carga. */
+function MiniaturaProducto({ src }) {
+  const [visible, setVisible] = useState(Boolean(src));
+
+  if (!visible) return null;
+
+  return (
+    <img
+      src={src}
+      alt=""
+      loading="lazy"
+      decoding="async"
+      onError={() => setVisible(false)}
+      className="h-24 w-24 shrink-0 rounded-2xl bg-slate-50 object-contain"
+    />
+  );
+}
+
 /**
  * Hasta dos alternativas, cada una con su diferencia principal frente a la
  * recomendada. Las etiquetas las calcula `describeAlternatives` comparando
@@ -346,35 +439,26 @@ function Alternativas({ alternativas, mejor }) {
           return (
             <article
               key={product.id}
-              className="flex min-w-0 gap-4 rounded-3xl border border-slate-200 bg-white p-4 shadow-[0_10px_30px_rgba(15,23,42,0.04)]"
+              className="flex gap-4 rounded-3xl border border-slate-200 bg-white p-4 shadow-[0_10px_30px_rgba(15,23,42,0.04)]"
             >
-              {product.imagen && (
-                <img
-                  src={product.imagen}
-                  alt=""
-                  loading="lazy"
-                  decoding="async"
-                  className="h-24 w-24 shrink-0 rounded-2xl bg-slate-50 object-contain"
-                />
-              )}
+              <MiniaturaProducto src={product.imagen} />
 
               <div className="min-w-0 flex-1">
                 <span className="inline-block rounded-full bg-orange-50 px-2.5 py-1 text-[10px] font-extrabold tracking-wide text-orange-700 uppercase">
                   {diferencia.label}
                 </span>
-                <p className="mt-2 text-sm leading-snug font-extrabold break-words text-slate-950">{product.nombre}</p>
-                <p className="mt-1 text-[11px] leading-relaxed break-words text-slate-500">{diferencia.detail}</p>
+                <p className="mt-2 text-sm leading-snug font-extrabold text-slate-950">{product.nombre}</p>
+                <p className="mt-1 text-[11px] leading-relaxed text-slate-500">{diferencia.detail}</p>
 
                 <div className="mt-3 flex flex-wrap items-baseline justify-between gap-2">
                   <span className="text-lg font-extrabold tracking-[-0.04em] text-slate-950">{product.precio}</span>
-                  <a
-                    href={construirUrlAfiliado(product.asin)}
-                    target="_blank"
-                    rel="noopener noreferrer"
+                  <EnlaceProducto
+                    product={product}
+                    position={ClickPosition.ALTERNATIVE}
                     className="rounded-lg border border-slate-200 px-3 py-1.5 text-[11px] font-extrabold text-slate-800 transition hover:bg-slate-50 focus-visible:ring-2 focus-visible:ring-orange-400 focus-visible:ring-offset-2 focus-visible:outline-none"
                   >
                     Ver producto <span aria-hidden="true">→</span>
-                  </a>
+                  </EnlaceProducto>
                 </div>
               </div>
             </article>
@@ -404,14 +488,13 @@ function FichaTecnica({ product }) {
               en Amazon
             </span>
           </div>
-          <a
-            href={construirUrlAfiliado(product.asin)}
-            target="_blank"
-            rel="noopener noreferrer"
+          <EnlaceProducto
+            product={product}
+            position={ClickPosition.DATASHEET}
             className="mt-8 block w-full rounded-xl bg-[#ff9900] px-6 py-5 text-center text-base font-extrabold text-white shadow-xl shadow-orange-500/20 transition hover:bg-[#e88700] focus-visible:ring-2 focus-visible:ring-orange-400 focus-visible:ring-offset-2 focus-visible:outline-none"
           >
             Ver producto en Amazon <span aria-hidden="true">→</span>
-          </a>
+          </EnlaceProducto>
         </div>
 
         <div>
@@ -427,10 +510,10 @@ function FichaTecnica({ product }) {
             {product.specifications.datasheet.map((caracteristica) => (
               <div
                 key={caracteristica.etiqueta}
-                className="grid min-w-0 grid-cols-[minmax(0,0.8fr)_minmax(0,1.2fr)] gap-4 py-4 text-sm"
+                className="grid grid-cols-[minmax(0,0.8fr)_minmax(0,1.2fr)] gap-4 py-4 text-sm"
               >
                 <dt className="font-medium text-slate-500">{caracteristica.etiqueta}</dt>
-                <dd className="min-w-0 break-words font-bold text-slate-900">{caracteristica.valor}</dd>
+                <dd className="font-bold text-slate-900">{caracteristica.valor}</dd>
               </div>
             ))}
           </dl>
@@ -445,17 +528,88 @@ export default function Calculadora() {
   const [buscando, setBuscando] = useState(false);
   const panelResultado = useRef(null);
   const temporizador = useRef(null);
+  const temporizadorAltura = useRef(null);
+  const haIniciado = useRef(false);
+  const ultimaVistaEnviada = useRef(null);
 
-  const resultado = useMemo(() => runRecommendation(flujo), [flujo]);
+  // El motor valida su entrada y puede lanzar: aquí no se deja escapar nada.
+  const { resultado, fallo } = useMemo(() => {
+    try {
+      return { resultado: runRecommendation(flujo), fallo: false };
+    } catch {
+      return { resultado: null, fallo: true };
+    }
+  }, [flujo]);
+
   const recomendacion = resultado?.best ?? null;
   const alternativas = resultado?.alternatives.slice(0, MAX_ALTERNATIVES) ?? [];
   const mostrandoResultado = Boolean(resultado) && !buscando;
 
-  // Si el componente se desmonta a media búsqueda, el temporizador se cancela.
-  useEffect(() => () => clearTimeout(temporizador.current), []);
+  const marcarInicio = () => {
+    if (haIniciado.current) return;
+    haIniciado.current = true;
+    trackCalculator(CalculatorEvent.STARTED);
+  };
+
+  // Los temporizadores no sobreviven al desmontaje.
+  useEffect(
+    () => () => {
+      clearTimeout(temporizador.current);
+      clearTimeout(temporizadorAltura.current);
+    },
+    []
+  );
+
+  // La altura se envía cuando la mano se para, no en cada píxel del slider.
+  useEffect(() => {
+    if (!haIniciado.current) return undefined;
+
+    clearTimeout(temporizadorAltura.current);
+    temporizadorAltura.current = setTimeout(() => {
+      trackCalculator(CalculatorEvent.HEIGHT_SELECTED, { height_m: flujo.targetHeight });
+    }, ANALYTICS_HEIGHT_DEBOUNCE_MS);
+
+    return () => clearTimeout(temporizadorAltura.current);
+  }, [flujo.targetHeight]);
+
+  // Una vista por recomendación distinta: arrastrar el slider dentro del mismo
+  // modelo no vuelve a contar.
+  const firmaVista = mostrandoResultado && resultado ? `${resultado.status}:${recomendacion?.product.asin ?? '-'}` : null;
+
+  useEffect(() => {
+    if (!firmaVista || ultimaVistaEnviada.current === firmaVista) return;
+    ultimaVistaEnviada.current = firmaVista;
+
+    trackCalculator(CalculatorEvent.RECOMMENDATION_VIEWED, {
+      status: resultado.status,
+      match: recomendacion?.match ?? null,
+      score: recomendacion?.score ?? null,
+      product_asin: recomendacion?.product.asin ?? null,
+      alternatives: alternativas.length,
+      height_m: resultado.requirement.targetHeight,
+      task: flujo.task,
+      environment: flujo.environment
+    });
+    // Depende sólo de la firma: es lo que define "otra vista distinta".
+  }, [firmaVista]);
+
+  const alCambiarTarea = (valor) => {
+    marcarInicio();
+    setFlujo((estado) => setTask(estado, valor));
+    trackCalculator(CalculatorEvent.TASK_SELECTED, { task: valor });
+  };
+
+  const alCambiarEntorno = (valor) => {
+    marcarInicio();
+    setFlujo((estado) => setEnvironment(estado, valor));
+    trackCalculator(CalculatorEvent.ENVIRONMENT_SELECTED, { environment: valor });
+  };
 
   const alSubir = (evento) => {
     evento.preventDefault();
+    if (buscando) return;
+
+    marcarInicio();
     const sinMovimiento = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
     setFlujo((estado) => submit(estado));
@@ -473,7 +627,7 @@ export default function Calculadora() {
 
   return (
     <section className="mx-auto max-w-7xl px-5 lg:px-10">
-      <div className="grid min-w-0 items-start gap-6 lg:grid-cols-2 lg:gap-8">
+      <div className="grid items-start gap-6 lg:grid-cols-2 lg:gap-8">
         {/* ---------------------------------------------------- Asistente */}
         <form
           onSubmit={alSubir}
@@ -533,7 +687,10 @@ export default function Calculadora() {
                 value={flujo.targetHeight}
                 aria-describedby="paso-1-subtexto"
                 aria-valuetext={`${formatAltura(flujo.targetHeight)} metros`}
-                onChange={(evento) => setFlujo((estado) => setTargetHeight(estado, Number(evento.target.value)))}
+                onChange={(evento) => {
+                  marcarInicio();
+                  setFlujo((estado) => setTargetHeight(estado, Number(evento.target.value)));
+                }}
                 className="mt-6 h-2 w-full cursor-pointer appearance-none rounded-full bg-slate-200 accent-orange-500 focus-visible:ring-2 focus-visible:ring-orange-400 focus-visible:ring-offset-2 focus-visible:outline-none"
               />
               <div className="mt-2 flex justify-between text-[11px] font-bold text-slate-400">
@@ -551,7 +708,7 @@ export default function Calculadora() {
                     name="tarea"
                     opcion={opcion}
                     seleccionada={flujo.task === opcion.value}
-                    onSelect={(valor) => setFlujo((estado) => setTask(estado, valor))}
+                    onSelect={alCambiarTarea}
                   />
                 ))}
               </div>
@@ -570,7 +727,7 @@ export default function Calculadora() {
                     name="entorno"
                     opcion={opcion}
                     seleccionada={flujo.environment === opcion.value}
-                    onSelect={(valor) => setFlujo((estado) => setEnvironment(estado, valor))}
+                    onSelect={alCambiarEntorno}
                   />
                 ))}
               </div>
@@ -585,9 +742,19 @@ export default function Calculadora() {
 
           <button
             type="submit"
-            className="mt-9 block w-full rounded-xl bg-orange-500 px-6 py-4 text-center text-base font-extrabold text-white shadow-xl shadow-orange-500/20 transition hover:bg-orange-600 focus-visible:ring-2 focus-visible:ring-orange-400 focus-visible:ring-offset-2 focus-visible:outline-none"
+            disabled={buscando}
+            aria-busy={buscando}
+            className={`mt-9 block w-full rounded-xl bg-orange-500 px-6 py-4 text-center text-base font-extrabold text-white shadow-xl shadow-orange-500/20 transition focus-visible:ring-2 focus-visible:ring-orange-400 focus-visible:ring-offset-2 focus-visible:outline-none ${
+              buscando ? 'cursor-not-allowed opacity-70' : 'hover:bg-orange-600'
+            }`}
           >
-            Ver mi recomendación <span aria-hidden="true">→</span>
+            {buscando ? (
+              'Buscando…'
+            ) : (
+              <>
+                Ver mi recomendación <span aria-hidden="true">→</span>
+              </>
+            )}
           </button>
           {flujo.submitted && (
             <p className="mt-3 text-center text-[11px] text-slate-400">
@@ -597,25 +764,31 @@ export default function Calculadora() {
         </form>
 
         {/* ---------------------------------------------------- Resultado */}
-        <div ref={panelResultado} className="min-w-0" aria-live="polite" aria-atomic="false">
-          {!resultado && <ResultadoPendiente />}
-          {resultado && buscando && <ResultadoBuscando duracionMs={SEARCH_FEEDBACK_MS} totalProductos={CATALOG_SIZE} />}
-          {mostrandoResultado && !recomendacion && <ResultadoSinCobertura resultado={resultado} />}
-          {mostrandoResultado && recomendacion && (
-            // La key reanima la tarjeta sólo cuando cambia el producto, no al
-            // arrastrar el slider dentro del mismo modelo.
-            <div key={recomendacion.product.id} className="ll-entrada">
-              <TuMejorOpcion recomendacion={recomendacion} requirement={resultado.requirement} />
-            </div>
-          )}
+        <div ref={panelResultado} aria-live="polite" aria-atomic="false">
+          <LimiteDeError fallback={<ResultadoError />}>
+            {fallo && <ResultadoError />}
+            {!fallo && !resultado && <ResultadoPendiente />}
+            {!fallo && resultado && buscando && (
+              <ResultadoBuscando duracionMs={SEARCH_FEEDBACK_MS} totalProductos={CATALOG_SIZE} />
+            )}
+            {!fallo && mostrandoResultado && !recomendacion && <ResultadoSinCobertura resultado={resultado} />}
+            {!fallo && mostrandoResultado && recomendacion && (
+              // La key reanima la tarjeta sólo cuando cambia el producto, no al
+              // arrastrar el slider dentro del mismo modelo.
+              <div key={recomendacion.product.id} className="ll-entrada">
+                <TuMejorOpcion recomendacion={recomendacion} requirement={resultado.requirement} />
+              </div>
+            )}
+          </LimiteDeError>
         </div>
       </div>
 
-      {mostrandoResultado && recomendacion && alternativas.length > 0 && (
-        <Alternativas alternativas={alternativas} mejor={recomendacion} />
-      )}
-
-      {mostrandoResultado && recomendacion && <FichaTecnica product={recomendacion.product} />}
+      <LimiteDeError fallback={null}>
+        {!fallo && mostrandoResultado && recomendacion && alternativas.length > 0 && (
+          <Alternativas alternativas={alternativas} mejor={recomendacion} />
+        )}
+        {!fallo && mostrandoResultado && recomendacion && <FichaTecnica product={recomendacion.product} />}
+      </LimiteDeError>
     </section>
   );
 }
