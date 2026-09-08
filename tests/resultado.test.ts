@@ -275,6 +275,11 @@ test('los warnings del engine llegan íntegros a la tarjeta', () => {
   const codigos = mejor.warnings.map((aviso) => aviso.code);
   assert.ok(codigos.includes('altura-plataforma-no-declarada'));
   assert.ok(codigos.includes('entorno-no-declarado'));
+  assert.ok(
+    mejor.warnings.some(
+      (aviso) => aviso.text === 'No disponemos de especificaciones del fabricante para este criterio.'
+    )
+  );
   for (const aviso of mejor.warnings) {
     assert.ok(aviso.text.length > 0);
   }

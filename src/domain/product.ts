@@ -143,7 +143,7 @@ const listaOUnknown = <T>(
   esValido: (valor: unknown) => boolean,
   etiqueta: string
 ): Maybe<readonly T[]> => {
-  if (valores === undefined || valores === null) return UNKNOWN;
+  if (valores === undefined || valores === null || valores.length === 0) return UNKNOWN;
   if (!Array.isArray(valores)) throw new TypeError(etiqueta + ' debe ser un array o null');
   for (const valor of valores) {
     if (!esValido(valor)) throw new TypeError(etiqueta + ': valor no permitido "' + String(valor) + '"');

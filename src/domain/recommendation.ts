@@ -452,14 +452,13 @@ function scoreTask(configuration: Configuration | null, scenario: Scenario): Sco
     configuration.supportedTasks.includes(scenario.task);
 
   if (confirmada && configuration) {
-    const preferida = preferredTypesFor(scenario.environment).has(configuration.type);
-    value = preferida ? 1 : 0.8;
+    value = 1;
     detail =
       'La configuración «' +
       configuration.name +
       '» sirve para ' +
       describeTask(scenario.task) +
-      (preferida ? ' y encaja con el entorno elegido.' : ', aunque su forma no es la típica de este entorno.');
+      '.';
   }
 
   return { key: 'task', weight: SCORE_WEIGHTS.task, value, weighted: 0, detail };
@@ -473,7 +472,7 @@ function scoreEnvironment(product: Product, scenario: Scenario): ScoreFactor {
       weight: SCORE_WEIGHTS.environment,
       value: 0.5,
       weighted: 0,
-      detail: 'El fabricante no declara entornos de uso: factor neutro para todos los productos.'
+      detail: 'No disponemos de especificaciones del fabricante para este criterio.'
     };
   }
   const incluido = soportados.includes(scenario.environment);
@@ -653,7 +652,7 @@ function buildWarnings(product: Product, scenario: Scenario, height: HeightEvide
   if (product.capabilities.supportedEnvironments === UNKNOWN) {
     warnings.push({
       code: 'entorno-no-declarado',
-      text: 'El fabricante no declara compatibilidad por entorno; ese criterio no ha podido puntuarse.'
+      text: 'No disponemos de especificaciones del fabricante para este criterio.'
     });
   }
 

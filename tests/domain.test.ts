@@ -23,6 +23,11 @@ test('los enums rechazan strings arbitrarios', () => {
   assert.throws(() => configuracionMinima({ supportedEnvironments: ['garaje'] }), /supportedEnvironments/);
 });
 
+test('una lista de entornos vacía representa UNKNOWN', () => {
+  const configuracion = configuracionMinima({ supportedEnvironments: [] });
+  assert.equal(configuracion.supportedEnvironments, UNKNOWN);
+});
+
 test('las medidas deben ser metros positivos', () => {
   assert.throws(() => configuracionMinima({ maxWorkHeight: '5.8' }), /maxWorkHeight/);
   assert.throws(() => configuracionMinima({ maxLadderLength: 0 }), /maxLadderLength/);

@@ -733,7 +733,7 @@ export default function Calculadora() {
               </div>
               {!ENTORNO_DECLARADO_POR_FABRICANTE && (
                 <p className="mt-3 text-[11px] leading-relaxed text-slate-500">
-                  Ningún fabricante publica para qué entornos está pensada su escalera. El entorno se usa para calcular
+                  No disponemos de especificaciones del fabricante para este criterio. El entorno se usa para calcular
                   cuánto debe sobresalir por encima del punto de apoyo, no para descartar modelos.
                 </p>
               )}
