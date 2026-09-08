@@ -9,3 +9,90 @@
 body {
 	font-family: inherit;
 }
+
+/* ------------------------------------------------------------------ *
+ * Animaciones del calculador
+ *
+ * Todas se desactivan con prefers-reduced-motion: el contenido queda en
+ * su estado final, nunca invisible.
+ * ------------------------------------------------------------------ */
+
+@keyframes ll-entrada {
+	from {
+		opacity: 0;
+		transform: translateY(10px) scale(0.995);
+	}
+	to {
+		opacity: 1;
+		transform: none;
+	}
+}
+
+@keyframes ll-latido {
+	0%,
+	100% {
+		opacity: 0.5;
+	}
+	50% {
+		opacity: 1;
+	}
+}
+
+@keyframes ll-barrido {
+	from {
+		transform: translateX(-100%);
+	}
+	to {
+		transform: translateX(100%);
+	}
+}
+
+@keyframes ll-progreso {
+	from {
+		width: 6%;
+	}
+	to {
+		width: 94%;
+	}
+}
+
+/* Entrada suave de la tarjeta de resultado. */
+.ll-entrada {
+	animation: ll-entrada 0.45s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+/* Bloques del esqueleto mientras se busca. */
+.ll-latido {
+	animation: ll-latido 1.4s ease-in-out infinite;
+}
+
+/* Brillo que recorre un hueco. El elemento debe estar posicionado y recortado
+   (relative/absolute + overflow-hidden) desde su propia clase de utilidad. */
+.ll-barrido::after {
+	content: '';
+	position: absolute;
+	inset: 0;
+	background: linear-gradient(90deg, transparent, rgb(255 255 255 / 0.7), transparent);
+	animation: ll-barrido 1.5s ease-in-out infinite;
+}
+
+/* Barra de progreso de la búsqueda. */
+.ll-progreso {
+	width: 94%;
+	animation: ll-progreso var(--ll-duracion, 900ms) cubic-bezier(0.4, 0, 0.2, 1) both;
+}
+
+/* Los pasos del checklist se encienden escalonados. */
+.ll-paso {
+	animation: ll-entrada 0.3s ease-out both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.ll-entrada,
+	.ll-latido,
+	.ll-barrido::after,
+	.ll-progreso,
+	.ll-paso {
+		animation: none;
+	}
+}

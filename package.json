@@ -10,6 +10,7 @@
     "build": "node scripts/check-links.js && astro build",
     "preview": "astro preview",
     "astro": "astro",
+    "test": "node --test \"tests/*.test.ts\"",
     "check-links": "node scripts/check-links.js"
   },
   "dependencies": {

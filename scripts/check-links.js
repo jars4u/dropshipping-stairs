@@ -1,14 +1,14 @@
 /**
  * Comprobación de enlaces de afiliado previa al build.
  *
- * Recorre el array de productos y hace una petición a la ficha de cada ASIN en
+ * Recorre el catálogo de productos y hace una petición a la ficha de cada ASIN en
  * Amazon España. Un 404 significa que el listado ha desaparecido: eso rompe el
  * build. Cualquier otro resultado (bloqueo antibot, red caída, timeout) se
  * reporta como aviso pero NO detiene la compilación, porque no demuestra que el
  * enlace esté roto y dejaría el despliegue a merced del rate limiting de Amazon.
  */
 
-import { productosEscaleras } from '../src/data/productos.js';
+import { catalogo as productosEscaleras } from '../src/data/catalogo.ts';
 
 // Verificación TLS obligatoria. Si el entorno que lanza el build trae
 // NODE_TLS_REJECT_UNAUTHORIZED=0 (proxies corporativos, imágenes de CI mal
@@ -115,7 +115,7 @@ async function main() {
   if (rotos.length > 0) {
     console.error(
       `Build detenido: ${rotos.length} enlace(s) de afiliado devuelven 404. ` +
-        `Actualiza el ASIN en src/data/productos.js antes de desplegar.\n`
+        `Actualiza el ASIN en src/data/catalogo.ts antes de desplegar.\n`
     );
     process.exit(1);
   }

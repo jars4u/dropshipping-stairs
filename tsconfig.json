@@ -8,6 +8,8 @@
     "dist"
   ],
   "compilerOptions": {
+    "allowImportingTsExtensions": true,
+    "noEmit": true,
     "jsx": "react-jsx",
     "jsxImportSource": "react"
   }

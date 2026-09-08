@@ -1,13 +1,22 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 export default function GaleriaProducto({ imagenes = [], alt = 'Imagen del producto' }) {
   const [imagenSeleccionada, setImagenSeleccionada] = useState(imagenes[0] ?? '');
   const [modalAbierto, setModalAbierto] = useState(false);
+  const [cargandoImagen, setCargandoImagen] = useState(true);
+  const imagenPrincipal = useRef(null);
 
   useEffect(() => {
     setImagenSeleccionada(imagenes[0] ?? '');
     setModalAbierto(false);
   }, [imagenes]);
+
+  useEffect(() => {
+    // Cada cambio de imagen vuelve a mostrar el esqueleto, salvo que el
+    // navegador ya la tenga en caché: entonces `complete` es true antes de que
+    // React llegue a enganchar el onLoad y no habría evento que esperar.
+    setCargandoImagen(!imagenPrincipal.current?.complete);
+  }, [imagenSeleccionada]);
 
   useEffect(() => {
     if (!modalAbierto) return undefined;
@@ -35,10 +44,19 @@ export default function GaleriaProducto({ imagenes = [], alt = 'Imagen del produ
         <button
           type="button"
           onClick={() => setModalAbierto(true)}
-          className="flex h-[28rem] w-full cursor-zoom-in items-center justify-center overflow-hidden rounded-none border-0 bg-white focus:ring-2 focus:ring-orange-400 focus:ring-offset-2 focus:outline-none sm:h-[32rem]"
+          className="relative flex aspect-4/3 w-full cursor-zoom-in items-center justify-center overflow-hidden rounded-none border-0 bg-white focus:ring-2 focus:ring-orange-400 focus:ring-offset-2 focus:outline-none"
           aria-label="Ampliar imagen del producto"
         >
-          <img src={imagenSeleccionada} alt={alt} className="h-full w-full object-cover" />
+          {cargandoImagen && <span className="ll-barrido absolute inset-0 overflow-hidden bg-slate-100" aria-hidden="true" />}
+          <img
+            ref={imagenPrincipal}
+            src={imagenSeleccionada}
+            alt={alt}
+            decoding="async"
+            onLoad={() => setCargandoImagen(false)}
+            onError={() => setCargandoImagen(false)}
+            className={`h-full w-full object-contain transition-opacity duration-300 ${cargandoImagen ? 'opacity-0' : 'opacity-100'}`}
+          />
         </button>
 
         <div className="mt-4 flex gap-3 overflow-x-auto pb-2" aria-label="Galería de imágenes del producto">
@@ -53,7 +71,7 @@ export default function GaleriaProducto({ imagenes = [], alt = 'Imagen del produ
               aria-label={`Ver imagen ${indice + 1}`}
               aria-pressed={imagen === imagenSeleccionada}
             >
-              <img src={imagen} alt="" className="h-full w-full object-cover" />
+              <img src={imagen} alt="" loading="lazy" decoding="async" className="h-full w-full object-cover" />
             </button>
           ))}
         </div>
