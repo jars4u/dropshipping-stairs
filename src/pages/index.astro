@@ -1,17 +1,170 @@
 ---
+import '../styles/global.css';
+import Calculadora from '../components/Calculadora.jsx';
 
+const titulo = 'LadderLand | Encuentra tu escalera ideal';
+const descripcion =
+  'Encuentra la escalera de seguridad adecuada para cada altura y proyecto con LadderLand.';
+const anio = new Date().getFullYear();
 ---
 
-<html lang="en">
-	<head>
-		<meta charset="utf-8" />
-		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-		<link rel="icon" href="/favicon.ico" />
-		<meta name="viewport" content="width=device-width" />
-		<meta name="generator" content={Astro.generator} />
-		<title>Astro</title>
-	</head>
-	<body>
-		<h1>Astro</h1>
-	</body>
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="color-scheme" content="light" />
+    <meta name="generator" content={Astro.generator} />
+
+    <title>{titulo}</title>
+    <meta name="description" content={descripcion} />
+    <link rel="canonical" href={Astro.url.href} />
+
+    <meta property="og:type" content="website" />
+    <meta property="og:locale" content="es_ES" />
+    <meta property="og:title" content={titulo} />
+    <meta property="og:description" content={descripcion} />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={titulo} />
+    <meta name="twitter:description" content={descripcion} />
+  </head>
+
+  <body class="bg-white text-slate-900 antialiased">
+    <header class="border-b border-slate-100 bg-white">
+      <div class="mx-auto flex max-w-7xl items-center justify-between px-5 py-5 lg:px-10">
+        <a href="/" class="text-xl font-extrabold tracking-[-0.04em] text-slate-950">LadderLand<span class="text-orange-500">.</span></a>
+        <span class="hidden text-xs font-bold tracking-[0.18em] text-slate-400 uppercase sm:block">Altura. Equilibrio. Confianza.</span>
+        <span class="rounded-full bg-slate-50 px-3 py-2 text-[10px] font-bold tracking-[0.14em] text-slate-500 uppercase">EN131</span>
+      </div>
+    </header>
+
+    <main>
+      <section class="overflow-hidden bg-white">
+        <div class="mx-auto max-w-7xl px-5 pt-16 pb-12 lg:px-10 lg:pt-24 lg:pb-20">
+          <p class="text-xs font-extrabold tracking-[0.2em] text-orange-600 uppercase">La decisión inteligente empieza aquí</p>
+          <h1 class="mt-5 max-w-4xl text-4xl font-extrabold leading-[1.08] tracking-[-0.055em] text-slate-950 sm:text-6xl lg:text-7xl">
+            Alcanza cualquier altura <span class="text-orange-500">sin perder el equilibrio</span>
+          </h1>
+          <p class="mt-7 max-w-2xl text-lg font-medium leading-relaxed text-slate-600 sm:text-xl">
+            La única decisión en tu vida donde querrás mantenerte firme.
+          </p>
+        </div>
+      </section>
+
+      <Calculadora client:load />
+
+      <article class="prose prose-slate mx-auto mt-20 max-w-4xl px-5 text-slate-600 leading-relaxed prose-headings:tracking-[-0.03em] prose-headings:text-slate-950 prose-strong:text-slate-800 lg:mt-28">
+        <h2>¿Cómo calcular la altura de una escalera extensible de forma segura?</h2>
+
+        <p>
+          Una escalera de apoyo no se coloca vertical: trabaja inclinada. El ángulo
+          recomendado es de aproximadamente <strong>75 grados</strong> respecto al
+          suelo, lo que en la práctica equivale a separar la base una cuarta parte de
+          la altura apoyada. Ese ángulo es el punto de equilibrio entre dos riesgos
+          opuestos: si la escalera está demasiado tumbada, los peldaños flexan y la
+          base tiende a deslizar hacia delante; si está demasiado vertical, el peso del
+          usuario puede hacerla volcar hacia atrás.
+        </p>
+
+        <p>
+          Como consecuencia de esa inclinación, la escalera siempre necesita ser algo
+          más larga que la altura a la que quieres llegar. Es simple trigonometría: el
+          larguero es la hipotenusa del triángulo que forman el suelo y la pared, así
+          que a 75° hace falta en torno a un <strong>3,5 % más de longitud</strong>. Por
+          eso la calculadora multiplica la altura que introduces por 1,035 antes de
+          recomendarte un modelo.
+        </p>
+
+        <h3>Por qué la escalera debe sobresalir 1 metro en exteriores</h3>
+
+        <p>
+          Cuando el trabajo implica acceder a una fachada, una cubierta o un canalón, no
+          basta con que la escalera llegue al borde. Debe <strong>sobresalir alrededor
+          de 1 metro por encima del punto de apoyo o de desembarco</strong>. Ese tramo
+          extra cumple una función concreta: te da un asidero firme a la altura del
+          pecho justo en el momento más delicado de la maniobra, que es el paso de la
+          escalera al tejado y, sobre todo, la vuelta.
+        </p>
+
+        <p>
+          Sin ese metro de sobrepaso tendrías que agacharte y soltar las manos en el
+          extremo superior, que es exactamente donde la escalera tiene menos estabilidad
+          lateral. Por eso, cuando eliges <em>fachada</em> o <em>tejado</em> en la
+          calculadora, se suma automáticamente ese metro obligatorio al resultado.
+        </p>
+
+        <h2>¿Qué es la Normativa EN131 para escaleras portátiles?</h2>
+
+        <p>
+          La <strong>EN131</strong> es la norma europea que fija los requisitos de
+          diseño, resistencia, marcado y ensayo de las escaleras portátiles. Es la
+          referencia que permite comparar productos de fabricantes distintos sabiendo
+          que han pasado las mismas pruebas, y es lo primero que deberías buscar en la
+          etiqueta antes de fijarte en el precio.
+        </p>
+
+        <h3>Carga de seguridad de 150 kg</h3>
+
+        <p>
+          Las escaleras conformes a la norma deben soportar una <strong>carga de
+          seguridad de 150 kg</strong>. Conviene entender qué incluye esa cifra: no es
+          solo tu peso corporal, sino el conjunto de la persona más la herramienta, el
+          bote de pintura, el material y el equipo de protección que subes contigo. Un
+          usuario de 85 kg con un cubo de pintura y una caja de herramientas se acerca
+          más al límite de lo que parece a simple vista.
+        </p>
+
+        <h3>Bases estabilizadoras y zapatas antideslizantes</h3>
+
+        <p>
+          El otro punto crítico de la norma es el apoyo en el suelo. La EN131 exige
+          <strong>zapatas antideslizantes</strong> y, en las escaleras más largas,
+          una <strong>barra o base estabilizadora</strong> que amplía la huella de
+          apoyo. Ese travesaño no es un accesorio estético: multiplica la anchura de la
+          base y reduce drásticamente el riesgo de vuelco lateral, que es la causa más
+          frecuente de caída en escaleras de gran altura.
+        </p>
+
+        <p>
+          Revisa las zapatas antes de cada uso. La goma se endurece, se desgasta y se
+          impregna de polvo o pintura, y una zapata gastada sobre un suelo pulido o
+          húmedo pierde buena parte de su agarre. Es una comprobación de diez segundos
+          que evita el fallo más habitual.
+        </p>
+
+        <h3>Clasificación profesional y doméstica</h3>
+
+        <p>
+          La norma distingue entre uso <strong>profesional</strong> (EN131 Professional,
+          pensada para jornadas de trabajo continuadas) y uso <strong>no profesional</strong>
+          o doméstico. Si vas a usar la escalera de forma esporádica para mantenimiento
+          en casa, la versión doméstica cumple; si el uso es intensivo o a gran altura,
+          la clasificación profesional compensa la diferencia de precio en durabilidad y
+          en margen de seguridad.
+        </p>
+      </article>
+    </main>
+
+    <footer class="mt-20 border-t border-slate-200 bg-slate-50">
+      <div class="mx-auto max-w-7xl px-5 py-10 lg:px-10">
+        <p class="text-sm leading-relaxed text-slate-600">
+          Como afiliado de Amazon, presento recomendaciones basadas en análisis técnicos.
+          Si realizas una compra a través de nuestros enlaces, podríamos percibir una
+          comisión de afiliación sin coste adicional para ti.
+        </p>
+
+        <p class="mt-4 text-xs leading-relaxed text-slate-500">
+          Los cálculos de esta herramienta son orientativos y no sustituyen a la
+          evaluación de riesgos ni a las instrucciones del fabricante. Verifica siempre
+          el marcado EN131, la carga máxima y el estado de la escalera antes de usarla.
+          Los precios mostrados son orientativos y los fija Amazon en el momento de la
+          compra.
+        </p>
+
+        <p class="mt-6 text-xs text-slate-400">
+          &copy; {anio} LadderLand.
+        </p>
+      </div>
+    </footer>
+  </body>
 </html>

@@ -7,14 +7,26 @@
   },
   "scripts": {
     "dev": "astro dev",
-    "build": "astro build",
+    "build": "node scripts/check-links.js && astro build",
     "preview": "astro preview",
-    "astro": "astro"
+    "astro": "astro",
+    "check-links": "node scripts/check-links.js"
   },
   "dependencies": {
-    "astro": "^7.3.1"
+    "@astrojs/react": "^6.0.5",
+    "@astrojs/vercel": "^11.0.10",
+    "@tailwindcss/vite": "^4.3.3",
+    "@types/react": "^19.2.18",
+    "@types/react-dom": "^19.2.7",
+    "astro": "^7.3.1",
+    "react": "^19.2.8",
+    "react-dom": "^19.2.8",
+    "tailwindcss": "^4.3.3"
   },
   "allowScripts": {
     "esbuild": true
+  },
+  "devDependencies": {
+    "@tailwindcss/typography": "^0.5.20"
   }
 }
