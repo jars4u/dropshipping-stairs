@@ -91,6 +91,20 @@ body {
 	animation: ll-entrada 0.3s ease-out both;
 }
 
+/* ------------------------------------------------------------------ *
+ * Sacudida del hero
+ *
+ * La anima HeroAnimacion escribiendo estas variables en el <section> del
+ * hero. En reposo valen cero, así que el titular queda exactamente donde
+ * estaba: esto no cambia tipografía, tamaños ni maquetación.
+ * ------------------------------------------------------------------ */
+
+.ll-sacudida {
+	transform: translate(calc(var(--ll-jolt-x, 0px) * 0.5), var(--ll-jolt-y, 0px)) rotate(var(--ll-jolt-r, 0deg));
+	transform-origin: 0% 50%;
+	will-change: transform;
+}
+
 @media (prefers-reduced-motion: reduce) {
 	html {
 		scroll-behavior: auto;

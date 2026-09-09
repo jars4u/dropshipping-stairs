@@ -1,6 +1,7 @@
 ---
 import '../styles/global.css';
 import Calculadora from '../components/Calculadora.jsx';
+import HeroAnimacion from '../components/HeroAnimacion.jsx';
 import CatalogoProductos from '../components/CatalogoProductos.astro';
 import Analytics from '@vercel/analytics/astro';
 
@@ -41,11 +42,11 @@ const anio = new Date().getFullYear();
     </header>
 
     <main>
-      <section class="overflow-hidden bg-white">
+      <section class="relative overflow-hidden bg-white" data-hero>
         <div class="mx-auto grid max-w-7xl gap-10 px-5 py-10 lg:grid-cols-[1.25fr_0.75fr] lg:items-center lg:gap-16 lg:px-10 lg:py-12">
           <div class="min-w-0">
             <p class="text-xs font-extrabold tracking-[0.2em] text-orange-600 uppercase">Escaleras multifuncionales</p>
-            <h1 class="mt-4 max-w-2xl text-4xl font-extrabold leading-[1.08] tracking-[-0.055em] text-slate-950 sm:text-5xl lg:text-6xl">
+            <h1 class="ll-sacudida mt-4 max-w-2xl text-4xl font-extrabold leading-[1.08] tracking-[-0.055em] text-slate-950 sm:text-5xl lg:text-6xl">
               Alcanza cualquier altura <span class="text-orange-500">sin perder el equilibrio</span>
             </h1>
             <p class="mt-4 max-w-2xl text-base font-medium leading-relaxed text-slate-600 sm:text-lg">
@@ -75,6 +76,8 @@ const anio = new Date().getFullYear();
             </span>
           </a>
         </div>
+
+        <HeroAnimacion client:visible />
       </section>
 
       <CatalogoProductos />
