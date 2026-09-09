@@ -2,12 +2,14 @@
 import '../styles/global.css';
 import Calculadora from '../components/Calculadora.jsx';
 import HeroAnimacion from '../components/HeroAnimacion.jsx';
+import { AFFILIATE_DISCLOSURE } from '../lib/afiliado.ts';
+import { SITE_URL } from '../lib/site.ts';
 import CatalogoProductos from '../components/CatalogoProductos.astro';
 import Analytics from '@vercel/analytics/astro';
 
 const titulo = 'LadderLand | Encuentra tu escalera ideal';
 const descripcion =
-  'Encuentra la escalera de seguridad adecuada para cada altura y proyecto con LadderLand.';
+  'Calcula la altura que necesitas y encuentra la escalera multifuncional adecuada para tu proyecto con LadderLand.';
 const anio = new Date().getFullYear();
 ---
 
@@ -18,16 +20,18 @@ const anio = new Date().getFullYear();
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="color-scheme" content="light" />
     <meta name="generator" content={Astro.generator} />
+    <meta name="robots" content="index,follow" />
 
     <title>{titulo}</title>
     <meta name="description" content={descripcion} />
-    <link rel="canonical" href={Astro.url.href} />
+    <link rel="canonical" href={`${SITE_URL}/`} />
 
     <meta property="og:type" content="website" />
     <meta property="og:locale" content="es_ES" />
     <meta property="og:title" content={titulo} />
     <meta property="og:description" content={descripcion} />
-    <meta name="twitter:card" content="summary_large_image" />
+    <meta property="og:url" content={`${SITE_URL}/`} />
+    <meta name="twitter:card" content="summary" />
     <meta name="twitter:title" content={titulo} />
     <meta name="twitter:description" content={descripcion} />
   </head>
@@ -180,12 +184,16 @@ const anio = new Date().getFullYear();
 
     <footer class="mt-20 border-t border-slate-200 bg-slate-50">
       <div class="mx-auto max-w-7xl px-5 py-10 lg:px-10">
+        <p class="text-sm font-semibold leading-relaxed text-slate-700">
+          {AFFILIATE_DISCLOSURE}
+        </p>
+
         <p class="mt-4 text-xs leading-relaxed text-slate-500">
           Los cálculos de esta herramienta son orientativos y no sustituyen a la
           evaluación de riesgos ni a las instrucciones del fabricante. Verifica siempre
           el marcado EN131, la carga máxima y el estado de la escalera antes de usarla.
-          Los precios mostrados son orientativos y los fija Amazon en el momento de la
-          compra.
+          Los precios y la disponibilidad se consultan directamente en Amazon en el
+          momento de la compra.
         </p>
 
         <p class="mt-6 text-xs text-slate-400">

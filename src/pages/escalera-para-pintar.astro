@@ -1,0 +1,130 @@
+---
+import '../styles/global.css';
+import Analytics from '@vercel/analytics/astro';
+import { catalogo } from '../data/catalogo.ts';
+import { AFFILIATE_DISCLOSURE, AFFILIATE_LINK_REL, construirUrlAfiliado } from '../lib/afiliado.ts';
+import { SITE_URL } from '../lib/site.ts';
+import { UNKNOWN } from '../domain/types.ts';
+
+const titulo = '¿Qué escalera necesitas para pintar? Guía para elegir | LadderLand';
+const descripcion =
+  'Guía para elegir una escalera para pintar paredes, techos y zonas altas según la altura, el espacio, la estabilidad y el tipo de trabajo.';
+const canonical = `${SITE_URL}/escalera-para-pintar`;
+const [teeno, tectake, drabest] = catalogo;
+
+const mostrar = (valor: unknown, sufijo = '') => (valor === UNKNOWN || valor === null ? 'No especificado' : `${valor}${sufijo}`);
+---
+
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="color-scheme" content="light" />
+    <meta name="robots" content="index,follow" />
+    <title>{titulo}</title>
+    <meta name="description" content={descripcion} />
+    <link rel="canonical" href={canonical} />
+    <meta property="og:type" content="website" />
+    <meta property="og:locale" content="es_ES" />
+    <meta property="og:title" content={titulo} />
+    <meta property="og:description" content={descripcion} />
+    <meta property="og:url" content={canonical} />
+    <meta name="twitter:card" content="summary" />
+    <meta name="twitter:title" content={titulo} />
+    <meta name="twitter:description" content={descripcion} />
+  </head>
+
+  <body class="bg-white text-slate-900 antialiased">
+    <header class="border-b border-slate-100 bg-white">
+      <div class="mx-auto flex max-w-7xl items-center justify-between px-5 py-5 lg:px-10">
+        <a href="/" class="text-xl font-extrabold tracking-[-0.04em] text-slate-950">LadderLand<span class="text-orange-500">.</span></a>
+        <a href="/" class="text-xs font-bold text-slate-500 transition hover:text-slate-900">Volver a la guía principal</a>
+      </div>
+    </header>
+
+    <main>
+      <section class="border-b border-slate-200 bg-slate-50">
+        <div class="mx-auto max-w-7xl px-5 py-14 lg:px-10 lg:py-20">
+          <p class="text-xs font-extrabold tracking-[0.2em] text-orange-600 uppercase">Guía de compra LadderLand</p>
+          <h1 class="mt-4 max-w-4xl text-4xl font-extrabold leading-[1.08] tracking-[-0.055em] text-slate-950 sm:text-5xl lg:text-6xl">
+            ¿Qué escalera necesitas para pintar?
+          </h1>
+          <p class="mt-6 max-w-2xl text-lg leading-relaxed text-slate-600">
+            Pintar una pared, un techo o una zona alta no exige necesariamente el mismo tipo de escalera. La altura, el espacio disponible y la estabilidad que necesitas deben guiar la elección.
+          </p>
+          <a href="/calculadora" class="mt-8 inline-flex items-center rounded-xl bg-orange-500 px-6 py-4 text-base font-extrabold text-white shadow-xl shadow-orange-500/20 transition hover:bg-orange-600 focus-visible:ring-2 focus-visible:ring-orange-400 focus-visible:ring-offset-2 focus-visible:outline-none">
+            Dinos la altura y el trabajo <span class="ml-2" aria-hidden="true">→</span>
+          </a>
+        </div>
+      </section>
+
+      <section class="mx-auto max-w-7xl px-5 py-16 lg:px-10 lg:py-20">
+        <div class="max-w-3xl">
+          <h2 class="text-3xl font-extrabold tracking-[-0.04em] text-slate-950 sm:text-4xl">Pintar no siempre significa el mismo trabajo</h2>
+          <p class="mt-5 text-base leading-relaxed text-slate-600">Para pintar paredes suele importar la distancia a la pared y cómo se apoya la escalera. Para pintar techos o zonas altas puede importar más la posición de trabajo y la estabilidad. Pintar una escalera interior también puede exigir mover el equipo y adaptarse a un espacio limitado.</p>
+          <p class="mt-4 text-base leading-relaxed text-slate-600">También conviene distinguir entre un retoque puntual y un trabajo prolongado. La elección depende de la altura de la zona, si trabajas frente a una pared o sobre una superficie abierta, la frecuencia con la que moverás la escalera, el espacio disponible y la estabilidad necesaria.</p>
+        </div>
+
+        <div class="mt-12 grid gap-5 md:grid-cols-3">
+          <article class="border-t-2 border-orange-500 pt-5"><h3 class="text-lg font-extrabold text-slate-950">Paredes y fachadas interiores</h3><p class="mt-2 text-sm leading-relaxed text-slate-600">Revisa la distancia al muro, el apoyo y la altura real de la zona que vas a pintar.</p></article>
+          <article class="border-t-2 border-orange-500 pt-5"><h3 class="text-lg font-extrabold text-slate-950">Techos y zonas altas</h3><p class="mt-2 text-sm leading-relaxed text-slate-600">La longitud de la escalera no equivale automáticamente a la altura segura de trabajo ni a tu alcance efectivo.</p></article>
+          <article class="border-t-2 border-orange-500 pt-5"><h3 class="text-lg font-extrabold text-slate-950">Pintura puntual o prolongada</h3><p class="mt-2 text-sm leading-relaxed text-slate-600">El tiempo de trabajo, el espacio para moverte y la frecuencia de traslado también forman parte de la decisión.</p></article>
+        </div>
+      </section>
+
+      <section class="border-y border-slate-200 bg-slate-50">
+        <div class="mx-auto max-w-7xl px-5 py-16 lg:px-10 lg:py-20">
+          <div class="max-w-3xl"><p class="text-xs font-extrabold tracking-[0.2em] text-orange-600 uppercase">Tipos de escalera</p><h2 class="mt-4 text-3xl font-extrabold tracking-[-0.04em] text-slate-950 sm:text-4xl">Qué puede encajar para pintar</h2></div>
+          <div class="mt-10 grid gap-6 md:grid-cols-2">
+            <article class="rounded-3xl border border-slate-200 bg-white p-6"><h3 class="text-xl font-extrabold text-slate-950">Escalera de tijera</h3><p class="mt-3 text-sm leading-relaxed text-slate-600">Puede ser una opción para trabajos de pintura donde necesitas una posición autoportante y el modelo ofrece la altura adecuada. Su limitación es que la zona de trabajo y la tarea deben ser compatibles con esa configuración.</p></article>
+            <article class="rounded-3xl border border-slate-200 bg-white p-6"><h3 class="text-xl font-extrabold text-slate-950">Escalera telescópica</h3><p class="mt-3 text-sm leading-relaxed text-slate-600">Puede tener sentido si el almacenamiento, el transporte o el ajuste de longitud importan. No debe elegirse solo por su longitud nominal: hay que comprobar cómo puede utilizarse.</p></article>
+            <article class="rounded-3xl border border-slate-200 bg-white p-6"><h3 class="text-xl font-extrabold text-slate-950">Escalera de 3 tramos</h3><p class="mt-3 text-sm leading-relaxed text-slate-600">Puede encajar cuando necesitas revisar varias posiciones y un alcance declarado concreto. La configuración y la superficie siguen determinando el uso de pintura adecuado.</p></article>
+            <article class="rounded-3xl border border-slate-200 bg-white p-6"><h3 class="text-xl font-extrabold text-slate-950">Multifunción o 4 en 1</h3><p class="mt-3 text-sm leading-relaxed text-slate-600">Puede ser útil si alternas entre posiciones declaradas, como escalera, tijera o andamio. Esa versatilidad también exige comprobar el montaje antes de cada uso.</p></article>
+          </div>
+        </div>
+      </section>
+
+      <section class="mx-auto max-w-7xl px-5 py-16 lg:px-10 lg:py-20">
+        <div class="max-w-3xl"><h2 class="text-3xl font-extrabold tracking-[-0.04em] text-slate-950 sm:text-4xl">Altura de la escalera y alcance no son lo mismo</h2><p class="mt-5 text-base leading-relaxed text-slate-600">Para elegir una escalera de pintura conviene distinguir la altura física de la escalera, la altura del punto de apoyo, la altura de trabajo y el alcance de la persona. Una escalera de determinada longitud no permite trabajar automáticamente a esa misma altura.</p><p class="mt-4 text-base leading-relaxed text-slate-600">La regla 1:4 describe una situación concreta de escalera apoyada convencional. No debe aplicarse sin más a una tijera, una plataforma, un andamio o una configuración multifunción.</p></div>
+      </section>
+
+      <section class="border-y border-slate-200 bg-slate-50">
+        <div class="mx-auto max-w-7xl px-5 py-16 lg:px-10 lg:py-20">
+          <div class="max-w-3xl"><p class="text-xs font-extrabold tracking-[0.2em] text-orange-600 uppercase">Alternativas del catálogo</p><h2 class="mt-4 text-3xl font-extrabold tracking-[-0.04em] text-slate-950 sm:text-4xl">¿Cuál tiene más sentido para pintar?</h2><p class="mt-5 text-base leading-relaxed text-slate-600">Los tres modelos tienen configuraciones y datos declarados distintos. La mejor opción depende de la tarea, no de una puntuación universal.</p></div>
+          <div class="mt-10 grid gap-6 lg:grid-cols-3">
+            {catalogo.map((producto) => (
+              <article class="flex h-full flex-col overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-[0_12px_36px_rgba(15,23,42,0.05)]">
+                <div class="flex aspect-4/3 items-center justify-center overflow-hidden bg-slate-100"><img src={producto.imagen} alt={producto.nombre} loading="lazy" decoding="async" class="h-full w-full object-contain" /></div>
+                <div class="flex flex-1 flex-col p-6"><p class="text-xs font-extrabold tracking-[0.15em] text-orange-600 uppercase">{producto.badge}</p><h3 class="mt-3 text-lg font-extrabold leading-tight text-slate-950">{producto.nombre}</h3><p class="mt-3 text-sm leading-relaxed text-slate-600">{producto.tag}</p><div class="mt-5 border-t border-slate-100 pt-5 text-xs leading-relaxed text-slate-600">
+                  {producto.id === teeno.id && <p>Puede encajar si necesitas varias configuraciones declaradas y una longitud máxima declarada de {mostrar(producto.capabilities.maxLadderLength, ' m')} para trabajos compatibles.</p>}
+                  {producto.id === tectake.id && <p>Puede encajar si valoras cuatro configuraciones declaradas para tareas de acceso, tijera, andamio simple o desniveles.</p>}
+                  {producto.id === drabest.id && <p>Puede encajar si necesitas revisar tres tramos, 4,90 m de longitud declarada y una altura de trabajo declarada de hasta 5,83 m.</p>}
+                </div><div class="mt-auto pt-6"><a href={construirUrlAfiliado(producto.asin)} target="_blank" rel={AFFILIATE_LINK_REL} class="block w-full rounded-xl bg-orange-500 px-5 py-3.5 text-center text-sm font-extrabold text-white shadow-lg shadow-orange-500/20 transition hover:bg-orange-600 focus-visible:ring-2 focus-visible:ring-orange-400 focus-visible:ring-offset-2 focus-visible:outline-none">Ver en Amazon <span aria-hidden="true">→</span></a></div></div>
+              </article>
+            ))}
+          </div>
+          <p class="mt-8 max-w-3xl text-xs leading-relaxed text-slate-500">No se muestran precios estáticos; el precio y la disponibilidad se consultan en Amazon. {AFFILIATE_DISCLOSURE}</p>
+          <div class="mt-5 flex flex-wrap gap-x-6 gap-y-3 text-sm font-extrabold"><a href="/escalera-para-techo" class="text-orange-600 hover:text-orange-700">Elegir una escalera para techo <span aria-hidden="true">→</span></a><a href="/escalera-multifuncional-5-metros" class="text-orange-600 hover:text-orange-700">Comparar multifuncionales de 5 metros <span aria-hidden="true">→</span></a><a href="/escalera-telescopica-5-metros" class="text-orange-600 hover:text-orange-700">Leer la guía de telescópicas <span aria-hidden="true">→</span></a><a href="/escalera-4-en-1" class="text-orange-600 hover:text-orange-700">Entender las 4 en 1 <span aria-hidden="true">→</span></a></div>
+        </div>
+      </section>
+
+      <section class="border-b border-slate-200 bg-white py-16 lg:py-20"><div class="mx-auto max-w-7xl px-5 lg:px-10"><div class="rounded-3xl border border-orange-200 bg-orange-50 p-7 sm:p-10"><h2 class="text-3xl font-extrabold tracking-[-0.04em] text-slate-950 sm:text-4xl">¿Todavía no sabes qué tipo necesitas?</h2><p class="mt-4 max-w-2xl text-base leading-relaxed text-slate-700">Dinos la altura y el trabajo que quieres realizar. LadderLand te orientará teniendo en cuenta también el entorno.</p><a href="/calculadora" class="mt-6 inline-flex items-center rounded-xl bg-orange-500 px-6 py-4 text-sm font-extrabold text-white shadow-lg shadow-orange-500/20 transition hover:bg-orange-600 focus-visible:ring-2 focus-visible:ring-orange-400 focus-visible:ring-offset-2 focus-visible:outline-none">Encuentra tu escalera <span class="ml-2" aria-hidden="true">→</span></a></div></div></section>
+
+      <section class="mx-auto max-w-7xl px-5 py-16 lg:px-10 lg:py-20"><div class="max-w-3xl"><h2 class="text-3xl font-extrabold tracking-[-0.04em] text-slate-950 sm:text-4xl">Seguridad al pintar en altura</h2><p class="mt-5 text-base leading-relaxed text-slate-600">Trabaja sobre una superficie estable, comprueba la configuración antes de subir y mantén la escalera según las instrucciones del fabricante. No improvises apoyos, evita posiciones inestables y considera salpicaduras, herramientas y obstáculos del entorno.</p><p class="mt-4 text-base leading-relaxed text-slate-600">No utilices una configuración distinta de la indicada por el fabricante. El alcance corporal no equivale a una altura segura de trabajo; esta guía y la calculadora son orientativas y no sustituyen una evaluación de riesgos.</p></div></section>
+
+      <section class="border-t border-slate-200 bg-slate-50"><div class="mx-auto max-w-4xl px-5 py-16 lg:py-20"><h2 class="text-3xl font-extrabold tracking-[-0.04em] text-slate-950">Preguntas frecuentes</h2><div class="mt-8 divide-y divide-slate-200">
+        <details class="py-5" open><summary class="cursor-pointer text-base font-extrabold text-slate-950">¿Qué escalera es mejor para pintar paredes?</summary><p class="mt-3 text-sm leading-relaxed text-slate-600">Depende de la altura, la distancia a la pared y la configuración permitida. Una tijera puede encajar en ciertas tareas autoportantes; una escalera apoyada puede responder a otras necesidades.</p></details>
+        <details class="py-5"><summary class="cursor-pointer text-base font-extrabold text-slate-950">¿Qué escalera necesito para pintar un techo?</summary><p class="mt-3 text-sm leading-relaxed text-slate-600">Primero define la altura y el espacio para trabajar. Después compara la configuración y la altura de trabajo que el fabricante declare para ese modelo.</p></details>
+        <details class="py-5"><summary class="cursor-pointer text-base font-extrabold text-slate-950">¿Es mejor una escalera telescópica para pintar?</summary><p class="mt-3 text-sm leading-relaxed text-slate-600">Puede ser útil si importan el almacenamiento, el transporte o el ajuste de longitud, pero no es universalmente mejor. La configuración y la superficie son determinantes.</p></details>
+        <details class="py-5"><summary class="cursor-pointer text-base font-extrabold text-slate-950">¿Qué escalera usar para pintar una pared alta?</summary><p class="mt-3 text-sm leading-relaxed text-slate-600">Compara una configuración apoyada, de tijera o de 3 tramos según la altura, el apoyo y el espacio. La longitud nominal no garantiza una altura segura de trabajo.</p></details>
+        <details class="py-5"><summary class="cursor-pointer text-base font-extrabold text-slate-950">¿Una escalera 4 en 1 sirve para pintar?</summary><p class="mt-3 text-sm leading-relaxed text-slate-600">Puede servir para tareas compatibles con sus configuraciones declaradas. En TecTake se declaran escalera simple, tijera, andamio simple y andamio para desniveles.</p></details>
+        <details class="py-5"><summary class="cursor-pointer text-base font-extrabold text-slate-950">¿Qué altura de escalera necesito para pintar un techo?</summary><p class="mt-3 text-sm leading-relaxed text-slate-600">No hay una equivalencia automática entre techo y longitud de escalera. Hay que distinguir altura, apoyo, longitud y altura de trabajo y consultar el modelo concreto.</p></details>
+        <details class="py-5"><summary class="cursor-pointer text-base font-extrabold text-slate-950">¿Es mejor una escalera de 3 tramos o telescópica para pintar?</summary><p class="mt-3 text-sm leading-relaxed text-slate-600">Depende de si priorizas las posiciones declaradas, el alcance, el almacenamiento o el transporte. La decisión debe partir de la tarea y no de una preferencia universal.</p></details>
+      </div></div></section>
+    </main>
+
+    <footer class="border-t border-slate-200 bg-white"><div class="mx-auto max-w-7xl px-5 py-10 lg:px-10"><p class="text-sm font-semibold leading-relaxed text-slate-700">{AFFILIATE_DISCLOSURE}</p><p class="mt-4 text-xs text-slate-400"><a href="/" class="font-bold text-slate-600 hover:text-slate-900">LadderLand</a> · Información orientativa para elegir una escalera de pintura.</p></div></footer>
+    <Analytics />
+  </body>
+</html>

@@ -2,6 +2,8 @@ import { Component, useEffect, useMemo, useRef, useState } from 'react';
 import GaleriaProducto from './GaleriaProducto.jsx';
 import { CalculatorEvent, ClickPosition, trackCalculator } from '../lib/analytics.ts';
 import {
+  AFFILIATE_DISCLOSURE,
+  AFFILIATE_LINK_REL,
   CATALOG_SIZE,
   HEIGHT_RANGE,
   MATCH_LABELS,
@@ -156,11 +158,11 @@ function EnlaceProducto({ product, position, className, children }) {
     <a
       href={construirUrlAfiliado(product.asin)}
       target="_blank"
-      rel="noopener noreferrer"
+      rel={AFFILIATE_LINK_REL}
       onClick={() =>
         trackCalculator(CalculatorEvent.PRODUCT_CLICKED, {
-          product_id: product.id,
-          product_asin: product.asin,
+          product: product.asin,
+          source: 'calculator',
           position
         })
       }
@@ -169,6 +171,16 @@ function EnlaceProducto({ product, position, className, children }) {
       {children}
     </a>
   );
+}
+
+/**
+ * Declaración del Programa de Afiliados de Amazon.
+ *
+ * Va junto a cada grupo de enlaces de afiliado, literal y sin recortar: es lo
+ * que exige el Acuerdo de Funcionamiento de Amazon España.
+ */
+function AvisoAfiliado({ className = '' }) {
+  return <p className={`text-[11px] leading-relaxed text-slate-400 ${className}`}>{AFFILIATE_DISCLOSURE}</p>;
 }
 
 /** Panel de la derecha antes de pedir la recomendación. */
@@ -276,6 +288,7 @@ function ResultadoSinCobertura({ resultado }) {
           >
             Ver producto <span aria-hidden="true">→</span>
           </EnlaceProducto>
+          <AvisoAfiliado className="mt-3 text-amber-800/70" />
         </div>
       )}
     </div>
@@ -335,7 +348,7 @@ function TuMejorOpcion({ recomendacion, requirement }) {
         </h3>
 
         <div className="mt-4 flex flex-wrap items-center justify-between gap-3">
-          <span className="text-3xl font-extrabold tracking-tighter text-slate-950">{product.precio}</span>
+          <span className="text-sm font-extrabold text-slate-700">Precio actual en Amazon</span>
           <IndicadorCoincidencia match={match} />
         </div>
 
@@ -344,11 +357,12 @@ function TuMejorOpcion({ recomendacion, requirement }) {
           position={ClickPosition.BEST}
           className="mt-5 block w-full rounded-xl bg-orange-500 px-6 py-4 text-center text-base font-extrabold text-white shadow-xl shadow-orange-500/20 transition hover:bg-orange-600 focus-visible:ring-2 focus-visible:ring-orange-400 focus-visible:ring-offset-2 focus-visible:outline-none"
         >
-          Ver producto <span aria-hidden="true">→</span>
+          Ver precio actual en Amazon <span aria-hidden="true">→</span>
         </EnlaceProducto>
         <p className="mt-2 text-center text-[11px] text-slate-400">
-          Precio y disponibilidad sujetos a actualización en Amazon.
+          Precio y disponibilidad se consultan en Amazon.
         </p>
+        <AvisoAfiliado className="mt-2 text-center" />
 
         <dl className="mt-6 divide-y divide-slate-100 border-y border-slate-100">
           {filas.map((fila) => (
@@ -451,13 +465,13 @@ function Alternativas({ alternativas, mejor }) {
                 <p className="mt-1 text-[11px] leading-relaxed text-slate-500">{diferencia.detail}</p>
 
                 <div className="mt-3 flex flex-wrap items-baseline justify-between gap-2">
-                  <span className="text-lg font-extrabold tracking-[-0.04em] text-slate-950">{product.precio}</span>
+                  <span className="text-xs font-extrabold text-slate-700">Precio actual en Amazon</span>
                   <EnlaceProducto
                     product={product}
                     position={ClickPosition.ALTERNATIVE}
                     className="rounded-lg border border-slate-200 px-3 py-1.5 text-[11px] font-extrabold text-slate-800 transition hover:bg-slate-50 focus-visible:ring-2 focus-visible:ring-orange-400 focus-visible:ring-offset-2 focus-visible:outline-none"
                   >
-                    Ver producto <span aria-hidden="true">→</span>
+                    Ver precio actual <span aria-hidden="true">→</span>
                   </EnlaceProducto>
                 </div>
               </div>
@@ -465,6 +479,8 @@ function Alternativas({ alternativas, mejor }) {
           );
         })}
       </div>
+
+      <AvisoAfiliado className="mt-4" />
     </section>
   );
 }
@@ -481,20 +497,16 @@ function FichaTecnica({ product }) {
           <p className="text-xs font-extrabold tracking-[0.18em] text-orange-600 uppercase">La elección LadderLand</p>
           <p className="mt-4 max-w-lg text-lg leading-relaxed text-slate-600">{product.tag}</p>
           <div className="mt-8 flex items-end gap-3">
-            <span className="text-5xl font-extrabold tracking-[-0.06em] text-slate-950">{product.precio}</span>
-            <span className="pb-1 text-xs text-slate-500">
-              precio orientativo
-              <br />
-              en Amazon
-            </span>
+            <span className="text-lg font-extrabold text-slate-700">Consulta el precio actual en Amazon</span>
           </div>
           <EnlaceProducto
             product={product}
             position={ClickPosition.DATASHEET}
             className="mt-8 block w-full rounded-xl bg-[#ff9900] px-6 py-5 text-center text-base font-extrabold text-white shadow-xl shadow-orange-500/20 transition hover:bg-[#e88700] focus-visible:ring-2 focus-visible:ring-orange-400 focus-visible:ring-offset-2 focus-visible:outline-none"
           >
-            Ver producto en Amazon <span aria-hidden="true">→</span>
+            Ver precio actual en Amazon <span aria-hidden="true">→</span>
           </EnlaceProducto>
+          <AvisoAfiliado className="mt-3" />
         </div>
 
         <div>
@@ -566,7 +578,7 @@ export default function Calculadora() {
 
     clearTimeout(temporizadorAltura.current);
     temporizadorAltura.current = setTimeout(() => {
-      trackCalculator(CalculatorEvent.HEIGHT_SELECTED, { height_m: flujo.targetHeight });
+      trackCalculator(CalculatorEvent.HEIGHT_SELECTED, { height: flujo.targetHeight });
     }, ANALYTICS_HEIGHT_DEBOUNCE_MS);
 
     return () => clearTimeout(temporizadorAltura.current);
@@ -581,14 +593,9 @@ export default function Calculadora() {
     ultimaVistaEnviada.current = firmaVista;
 
     trackCalculator(CalculatorEvent.RECOMMENDATION_VIEWED, {
+      product: recomendacion?.product.asin ?? null,
       status: resultado.status,
-      match: recomendacion?.match ?? null,
-      score: recomendacion?.score ?? null,
-      product_asin: recomendacion?.product.asin ?? null,
-      alternatives: alternativas.length,
-      height_m: resultado.requirement.targetHeight,
-      task: flujo.task,
-      environment: flujo.environment
+      alternatives: alternativas.length
     });
     // Depende sólo de la firma: es lo que define "otra vista distinta".
   }, [firmaVista]);

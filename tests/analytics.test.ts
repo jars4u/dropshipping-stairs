@@ -90,6 +90,15 @@ test('el click de producto distingue desde dónde se pulsa', () => {
   }
 });
 
+test('el CTA de Amazon envía el producto y el origen sólo en el click', () => {
+  const componente = leer('../src/components/Calculadora.jsx');
+
+  assert.match(componente, /onClick=\{\(\) =>\s*trackCalculator\(CalculatorEvent\.PRODUCT_CLICKED/);
+  assert.ok(componente.includes("product: product.asin"));
+  assert.ok(componente.includes("source: 'calculator'"));
+  assert.ok(!componente.includes('PRODUCT_CLICKED, { product: product.asin'), 'no debe enviarse al renderizar');
+});
+
 test('ninguna propiedad enviada puede identificar a una persona', () => {
   const componente = leer('../src/components/Calculadora.jsx');
 

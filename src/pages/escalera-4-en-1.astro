@@ -1,0 +1,161 @@
+---
+import '../styles/global.css';
+import Calculadora from '../components/Calculadora.jsx';
+import Analytics from '@vercel/analytics/astro';
+import { catalogo } from '../data/catalogo.ts';
+import { AFFILIATE_DISCLOSURE, AFFILIATE_LINK_REL, construirUrlAfiliado } from '../lib/afiliado.ts';
+import { SITE_URL } from '../lib/site.ts';
+import { UNKNOWN } from '../domain/types.ts';
+
+const titulo = 'Escalera 4 en 1: cómo elegir la adecuada | LadderLand';
+const descripcion =
+  'Entiende qué significa una escalera 4 en 1, qué configuraciones puede ofrecer y cuándo encaja mejor que una telescópica o una escalera de 3 tramos.';
+const canonical = `${SITE_URL}/escalera-4-en-1`;
+const [, tectake] = catalogo;
+
+const mostrar = (valor: unknown, sufijo = '') => (valor === UNKNOWN || valor === null ? 'No especificado' : `${valor}${sufijo}`);
+const configuracionesTectake = tectake.configurations.map(({ name }) => name).join(', ');
+---
+
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="color-scheme" content="light" />
+    <meta name="robots" content="index,follow" />
+    <title>{titulo}</title>
+    <meta name="description" content={descripcion} />
+    <link rel="canonical" href={canonical} />
+    <meta property="og:type" content="website" />
+    <meta property="og:locale" content="es_ES" />
+    <meta property="og:title" content={titulo} />
+    <meta property="og:description" content={descripcion} />
+    <meta property="og:url" content={canonical} />
+    <meta name="twitter:card" content="summary" />
+    <meta name="twitter:title" content={titulo} />
+    <meta name="twitter:description" content={descripcion} />
+  </head>
+
+  <body class="bg-white text-slate-900 antialiased">
+    <header class="border-b border-slate-100 bg-white">
+      <div class="mx-auto flex max-w-7xl items-center justify-between px-5 py-5 lg:px-10">
+        <a href="/" class="text-xl font-extrabold tracking-[-0.04em] text-slate-950">LadderLand<span class="text-orange-500">.</span></a>
+        <a href="/" class="text-xs font-bold text-slate-500 transition hover:text-slate-900">Volver a la guía principal</a>
+      </div>
+    </header>
+
+    <main>
+      <section class="border-b border-slate-200 bg-slate-50">
+        <div class="mx-auto max-w-7xl px-5 py-14 lg:px-10 lg:py-20">
+          <p class="text-xs font-extrabold tracking-[0.2em] text-orange-600 uppercase">Guía de compra LadderLand</p>
+          <h1 class="mt-4 max-w-4xl text-4xl font-extrabold leading-[1.08] tracking-[-0.055em] text-slate-950 sm:text-5xl lg:text-6xl">
+            Escalera 4 en 1: qué significa y cuál te conviene
+          </h1>
+          <p class="mt-6 max-w-2xl text-lg leading-relaxed text-slate-600">
+            Una escalera 4 en 1 reúne varias posiciones en un mismo producto. La clave es saber qué configuraciones declara, para qué trabajo las necesitas y si ese formato encaja mejor que una telescópica o una escalera de 3 tramos.
+          </p>
+          <a href="#calculadora" class="mt-8 inline-flex items-center rounded-xl bg-orange-500 px-6 py-4 text-base font-extrabold text-white shadow-xl shadow-orange-500/20 transition hover:bg-orange-600 focus-visible:ring-2 focus-visible:ring-orange-400 focus-visible:ring-offset-2 focus-visible:outline-none">
+            Calcular mi escalera <span class="ml-2" aria-hidden="true">→</span>
+          </a>
+        </div>
+      </section>
+
+      <section class="mx-auto max-w-7xl px-5 py-16 lg:px-10 lg:py-20">
+        <div class="max-w-3xl">
+          <h2 class="text-3xl font-extrabold tracking-[-0.04em] text-slate-950 sm:text-4xl">¿Qué significa realmente “4 en 1”?</h2>
+          <p class="mt-5 text-base leading-relaxed text-slate-600">
+            Significa que el fabricante declara cuatro configuraciones para el mismo producto. En la TecTake del catálogo son: {configuracionesTectake}. No significa que todas las posiciones tengan la misma altura, estabilidad o utilidad.
+          </p>
+          <p class="mt-4 text-base leading-relaxed text-slate-600">
+            La posición de tijera es una configuración autoportante; la escalera simple se utiliza apoyada; y las posiciones de andamio corresponden a los modos de trabajo que el fabricante declara para este modelo. La ficha no especifica una altura de plataforma ni una altura de trabajo concreta, así que no conviene completar esos datos con suposiciones.
+          </p>
+        </div>
+
+        <div class="mt-12 grid gap-5 md:grid-cols-2 lg:grid-cols-4">
+          <article class="border-t-2 border-orange-500 pt-5"><h3 class="text-lg font-extrabold text-slate-950">Escalera simple</h3><p class="mt-2 text-sm leading-relaxed text-slate-600">Configuración declarada para acceder y trabajar apoyado en la escalera.</p></article>
+          <article class="border-t-2 border-orange-500 pt-5"><h3 class="text-lg font-extrabold text-slate-950">De tijera</h3><p class="mt-2 text-sm leading-relaxed text-slate-600">Posición autoportante declarada para no depender del mismo tipo de apoyo que una escalera simple.</p></article>
+          <article class="border-t-2 border-orange-500 pt-5"><h3 class="text-lg font-extrabold text-slate-950">Andamio simple</h3><p class="mt-2 text-sm leading-relaxed text-slate-600">Modo de andamio que forma parte de las cuatro configuraciones indicadas para TecTake.</p></article>
+          <article class="border-t-2 border-orange-500 pt-5"><h3 class="text-lg font-extrabold text-slate-950">Andamio para desniveles</h3><p class="mt-2 text-sm leading-relaxed text-slate-600">Configuración declarada para desniveles; su uso concreto debe seguir las instrucciones del fabricante.</p></article>
+        </div>
+      </section>
+
+      <section class="border-y border-slate-200 bg-slate-50">
+        <div class="mx-auto max-w-7xl px-5 py-16 lg:px-10 lg:py-20">
+          <div class="max-w-3xl">
+            <p class="text-xs font-extrabold tracking-[0.2em] text-orange-600 uppercase">Decisión de compra</p>
+            <h2 class="mt-4 text-3xl font-extrabold tracking-[-0.04em] text-slate-950 sm:text-4xl">¿Cuándo tiene sentido una 4 en 1?</h2>
+            <p class="mt-5 text-base leading-relaxed text-slate-600">Puede tener sentido para quien alterna entre distintos tipos de tarea y valora reunir varias configuraciones en un solo producto. También puede ahorrar espacio frente a comprar herramientas separadas, aunque el transporte y el montaje dependen del modelo concreto.</p>
+          </div>
+
+          <div class="mt-10 grid gap-6 md:grid-cols-2">
+            <article class="rounded-3xl border border-slate-200 bg-white p-6">
+              <h3 class="text-xl font-extrabold text-slate-950">Lo que puede aportar</h3>
+              <ul class="mt-4 space-y-3 text-sm leading-relaxed text-slate-600"><li>Versatilidad para alternar entre posiciones declaradas.</li><li>Una sola estructura para trabajos de acceso y de plataforma compatibles.</li><li>Puede resultar práctica cuando el espacio de almacenamiento importa.</li><li>La TecTake declara usos en construcción, renovación del hogar y bricolaje.</li></ul>
+            </article>
+            <article class="rounded-3xl border border-slate-200 bg-white p-6">
+              <h3 class="text-xl font-extrabold text-slate-950">Lo que no debes dar por hecho</h3>
+              <ul class="mt-4 space-y-3 text-sm leading-relaxed text-slate-600"><li>La configuración no convierte automáticamente al producto en una opción de mayor altura.</li><li>El peso y la complejidad de montaje pueden importar al moverla o cambiarla.</li><li>No todas las posiciones sirven para todas las tareas.</li><li>La longitud de la escalera no equivale automáticamente a la altura efectiva de trabajo.</li></ul>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="mx-auto max-w-7xl px-5 py-16 lg:px-10 lg:py-20">
+        <div class="grid gap-10 lg:grid-cols-[0.8fr_1.2fr] lg:items-start lg:gap-16">
+          <div>
+            <p class="text-xs font-extrabold tracking-[0.2em] text-orange-600 uppercase">Modelo principal del catálogo</p>
+            <h2 class="mt-4 text-3xl font-extrabold tracking-[-0.04em] text-slate-950 sm:text-4xl">{tectake.nombre}</h2>
+            <p class="mt-5 text-base leading-relaxed text-slate-600">{tectake.tag}</p>
+            <a href={construirUrlAfiliado(tectake.asin)} target="_blank" rel={AFFILIATE_LINK_REL} class="mt-7 inline-flex items-center rounded-xl bg-orange-500 px-6 py-4 text-sm font-extrabold text-white shadow-lg shadow-orange-500/20 transition hover:bg-orange-600 focus-visible:ring-2 focus-visible:ring-orange-400 focus-visible:ring-offset-2 focus-visible:outline-none">
+              Ver en Amazon <span class="ml-2" aria-hidden="true">→</span>
+            </a>
+          </div>
+          <div class="overflow-hidden rounded-3xl border border-slate-200 bg-slate-100"><img src={tectake.imagen} alt={tectake.nombre} loading="lazy" decoding="async" class="aspect-4/3 h-full w-full object-contain" /></div>
+        </div>
+
+        <div class="mt-10 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
+          <div class="border-t border-slate-200 pt-4"><p class="text-xs font-bold text-slate-500">Material</p><p class="mt-1 font-extrabold text-slate-950">{tectake.specifications.material}</p></div>
+          <div class="border-t border-slate-200 pt-4"><p class="text-xs font-bold text-slate-500">Peso</p><p class="mt-1 font-extrabold text-slate-950">{mostrar(tectake.specifications.weightKg, ' kg')}</p></div>
+          <div class="border-t border-slate-200 pt-4"><p class="text-xs font-bold text-slate-500">Carga máxima declarada</p><p class="mt-1 font-extrabold text-slate-950">{mostrar(tectake.specifications.maxLoadKg, ' kg')}</p></div>
+          <div class="border-t border-slate-200 pt-4"><p class="text-xs font-bold text-slate-500">Plataforma declarada</p><p class="mt-1 font-extrabold text-slate-950">147 x 40 cm</p></div>
+        </div>
+        <p class="mt-8 max-w-3xl text-xs leading-relaxed text-slate-500">La ficha declara una altura máxima de 2,75 m, pero no especifica una altura de trabajo ni la altura de la plataforma. No se muestra un precio estático; el precio y la disponibilidad se consultan en Amazon.</p>
+        <p class="mt-3 max-w-3xl text-xs leading-relaxed text-slate-500">{AFFILIATE_DISCLOSURE}</p>
+      </section>
+
+      <section class="border-y border-slate-200 bg-slate-50">
+        <div class="mx-auto max-w-7xl px-5 py-16 lg:px-10 lg:py-20">
+          <div class="max-w-3xl"><h2 class="text-3xl font-extrabold tracking-[-0.04em] text-slate-950 sm:text-4xl">4 en 1, telescópica o 3 tramos</h2><p class="mt-5 text-base leading-relaxed text-slate-600">“Más configuraciones” no significa automáticamente “mejor para todo”. La elección depende del tipo de trabajo, la altura y el espacio disponible.</p></div>
+          <div class="mt-10 overflow-x-auto rounded-2xl border border-slate-200 bg-white">
+            <table class="w-full min-w-225 border-collapse text-left text-sm"><caption class="sr-only">Comparación entre una escalera 4 en 1, telescópica y de 3 tramos</caption><thead class="bg-slate-100 text-xs font-extrabold uppercase tracking-wide text-slate-500"><tr><th class="px-5 py-4">Tipo</th><th class="px-5 py-4">Configuración</th><th class="px-5 py-4">Transporte y almacenamiento</th><th class="px-5 py-4">Trabajos que puede encajar</th><th class="px-5 py-4">Cuándo elegirla</th></tr></thead>
+              <tbody class="divide-y divide-slate-100 text-slate-700">
+                <tr><th scope="row" class="px-5 py-5 align-top font-extrabold text-slate-950">TecTake 4 en 1</th><td class="px-5 py-5 align-top">Simple, tijera, andamio simple y desniveles.</td><td class="px-5 py-5 align-top">Valora su peso de 16,4 kg y el espacio necesario para guardarla.</td><td class="px-5 py-5 align-top">Acceso, bricolaje y trabajos compatibles con las posiciones declaradas.</td><td class="px-5 py-5 align-top">Cuando la versatilidad de cuatro posiciones pesa más que buscar el mayor alcance.</td></tr>
+                <tr><th scope="row" class="px-5 py-5 align-top font-extrabold text-slate-950">TEENO telescópica</th><td class="px-5 py-5 align-top">7 configuraciones declaradas, incluida escalera y plataforma.</td><td class="px-5 py-5 align-top">El formato plegable puede ser relevante para el almacenamiento; el modelo declara 26 kg.</td><td class="px-5 py-5 align-top">Trabajos compatibles con sus configuraciones declaradas.</td><td class="px-5 py-5 align-top">Cuando buscas varias posiciones y una longitud máxima declarada de 5,8 m.</td></tr>
+                <tr><th scope="row" class="px-5 py-5 align-top font-extrabold text-slate-950">DRABEST 3 tramos</th><td class="px-5 py-5 align-top">Autónoma, tijera y configuración A con extensión.</td><td class="px-5 py-5 align-top">Conviene valorar sus 14,5 kg y 4,90 m de longitud declarada.</td><td class="px-5 py-5 align-top">Trabajo a grandes alturas y uso profesional declarados.</td><td class="px-5 py-5 align-top">Cuando necesitas comparar tres tramos y una altura de trabajo declarada de hasta 5,83 m.</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="mt-6 flex flex-wrap gap-x-6 gap-y-3 text-sm font-extrabold"><a href="/escalera-multifuncional-5-metros" class="text-orange-600 hover:text-orange-700">Comparar las multifuncionales de 5 metros <span aria-hidden="true">→</span></a><a href="/escalera-telescopica-5-metros" class="text-orange-600 hover:text-orange-700">Leer la guía de telescópicas <span aria-hidden="true">→</span></a></div>
+        </div>
+      </section>
+
+      <section id="calculadora" class="scroll-mt-6 border-b border-slate-200 bg-white py-16 lg:py-20"><div class="mx-auto max-w-7xl px-5 lg:px-10"><div class="mb-10 max-w-3xl"><h2 class="text-3xl font-extrabold tracking-[-0.04em] text-slate-950 sm:text-4xl">¿Realmente necesitas una 4 en 1?</h2><p class="mt-4 text-base leading-relaxed text-slate-600">Indica la altura, el tipo de trabajo y el entorno y LadderLand te orientará hacia el modelo que mejor encaja.</p><a href="#calculadora-formulario" class="mt-5 inline-flex text-sm font-extrabold text-orange-600 hover:text-orange-700">Encuentra tu escalera <span class="ml-2" aria-hidden="true">→</span></a></div><div id="calculadora-formulario"><Calculadora client:load /></div></div></section>
+
+      <section class="mx-auto max-w-7xl px-5 py-16 lg:px-10 lg:py-20"><div class="max-w-3xl"><h2 class="text-3xl font-extrabold tracking-[-0.04em] text-slate-950 sm:text-4xl">Uso seguro de una escalera 4 en 1</h2><p class="mt-5 text-base leading-relaxed text-slate-600">Verifica la configuración antes de subir, coloca el producto sobre una superficie estable y respeta las instrucciones del fabricante y la capacidad de carga declarada. No asumas que todas las posiciones permiten la misma altura o el mismo uso.</p><p class="mt-4 text-base leading-relaxed text-slate-600">La longitud de la escalera tampoco equivale automáticamente a la altura efectiva de trabajo. La calculadora de LadderLand es orientativa y no sustituye una evaluación de riesgos ni las instrucciones del fabricante.</p></div></section>
+
+      <section class="border-t border-slate-200 bg-slate-50"><div class="mx-auto max-w-4xl px-5 py-16 lg:py-20"><h2 class="text-3xl font-extrabold tracking-[-0.04em] text-slate-950">Preguntas frecuentes</h2><div class="mt-8 divide-y divide-slate-200">
+        <details class="py-5" open><summary class="cursor-pointer text-base font-extrabold text-slate-950">¿Qué significa que una escalera sea 4 en 1?</summary><p class="mt-3 text-sm leading-relaxed text-slate-600">Que el fabricante declara cuatro configuraciones para el mismo producto. En TecTake son escalera simple, tijera, andamio simple y andamio para desniveles.</p></details>
+        <details class="py-5"><summary class="cursor-pointer text-base font-extrabold text-slate-950">¿Una escalera 4 en 1 sirve como andamio?</summary><p class="mt-3 text-sm leading-relaxed text-slate-600">La TecTake declara las configuraciones “andamio simple” y “andamio para desniveles”. Debes utilizar únicamente las posiciones y condiciones indicadas por el fabricante.</p></details>
+        <details class="py-5"><summary class="cursor-pointer text-base font-extrabold text-slate-950">¿Es mejor una escalera 4 en 1 que una telescópica?</summary><p class="mt-3 text-sm leading-relaxed text-slate-600">No de forma universal. La 4 en 1 prioriza las posiciones declaradas; una telescópica puede encajar mejor si el almacenamiento o el ajuste de longitud son determinantes.</p></details>
+        <details class="py-5"><summary class="cursor-pointer text-base font-extrabold text-slate-950">¿Qué escalera 4 en 1 elegir para pintar?</summary><p class="mt-3 text-sm leading-relaxed text-slate-600">Depende de la altura, el tipo de apoyo y la configuración permitida. La calculadora puede orientarte, pero la ficha del fabricante decide las condiciones de uso.</p></details>
+        <details class="py-5"><summary class="cursor-pointer text-base font-extrabold text-slate-950">¿Una escalera 4 en 1 sirve para alcanzar techos altos?</summary><p class="mt-3 text-sm leading-relaxed text-slate-600">No se puede responder solo por el “4 en 1”. La TecTake declara una altura máxima de 2,75 m y no especifica una altura de trabajo concreta.</p></details>
+        <details class="py-5"><summary class="cursor-pointer text-base font-extrabold text-slate-950">¿Qué diferencia hay entre una escalera 4 en 1 y una de 3 tramos?</summary><p class="mt-3 text-sm leading-relaxed text-slate-600">La TecTake declara cuatro posiciones, mientras que la DRABEST declara tres tramos y configuraciones autónoma, tijera y A con extensión. Son formatos distintos y no se comparan solo por el número.</p></details>
+        <details class="py-5"><summary class="cursor-pointer text-base font-extrabold text-slate-950">¿Qué debo comprobar antes de utilizarla?</summary><p class="mt-3 text-sm leading-relaxed text-slate-600">Comprueba la configuración, la superficie, la capacidad de carga y las instrucciones del fabricante antes de subir.</p></details>
+      </div></div></section>
+    </main>
+
+    <footer class="border-t border-slate-200 bg-white"><div class="mx-auto max-w-7xl px-5 py-10 lg:px-10"><p class="text-sm font-semibold leading-relaxed text-slate-700">{AFFILIATE_DISCLOSURE}</p><p class="mt-4 text-xs text-slate-400"><a href="/" class="font-bold text-slate-600 hover:text-slate-900">LadderLand</a> · Información orientativa para elegir una escalera 4 en 1.</p></div></footer>
+    <Analytics />
+  </body>
+</html>

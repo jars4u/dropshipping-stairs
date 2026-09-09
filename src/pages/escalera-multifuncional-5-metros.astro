@@ -1,0 +1,221 @@
+---
+import '../styles/global.css';
+import Calculadora from '../components/Calculadora.jsx';
+import Analytics from '@vercel/analytics/astro';
+import { catalogo } from '../data/catalogo.ts';
+import { AFFILIATE_DISCLOSURE, AFFILIATE_LINK_REL, construirUrlAfiliado } from '../lib/afiliado.ts';
+import { SITE_URL } from '../lib/site.ts';
+import { UNKNOWN } from '../domain/types.ts';
+
+const titulo = 'Escaleras multifuncionales de 5 metros: cuál necesitas realmente? | LadderLand';
+const descripcion =
+  'Compara escaleras multifuncionales cercanas a 5 metros y usa la calculadora LadderLand para orientarte según la altura, el trabajo y el entorno.';
+const canonical = `${SITE_URL}/escalera-multifuncional-5-metros`;
+const [teeno, tectake] = catalogo;
+
+const mostrar = (valor: unknown, sufijo = '') => (valor === UNKNOWN || valor === null ? 'No especificado' : `${valor}${sufijo}`);
+const configuraciones = (producto: (typeof catalogo)[number]) => producto.configurations.map(({ name }) => name).join(', ');
+const alcance = (producto: (typeof catalogo)[number]) => {
+  const { maxLadderLength, maxWorkHeight } = producto.capabilities;
+  if (maxWorkHeight !== UNKNOWN) return `Longitud ${mostrar(maxLadderLength, ' m')} · altura de trabajo hasta ${mostrar(maxWorkHeight, ' m')}`;
+  return `Longitud máxima ${mostrar(maxLadderLength, ' m')}`;
+};
+const diferencial = (producto: (typeof catalogo)[number]) => {
+  if (producto.id === teeno.id) return '7 configuraciones declaradas, aluminio aeronáutico y altura máxima declarada de 5,8 m.';
+  if (producto.id === tectake.id) return 'Diseño 4 en 1 con plataforma declarada de 147 x 40 cm.';
+  return '3 tramos, 27 peldaños y altura de trabajo declarada de hasta 5,83 m.';
+};
+const orientacion = (producto: (typeof catalogo)[number]) => {
+  if (producto.id === teeno.id) return 'Para quien busca varias configuraciones y una longitud máxima declarada cercana a 5 metros.';
+  if (producto.id === tectake.id) return 'Para proyectos que encajan con una escalera plegable 4 en 1 de menor alcance declarado.';
+  return 'Para quien necesita comparar una escalera de 3 tramos con longitud de 4,90 m y altura de trabajo declarada.';
+};
+const caracteristicas = (producto: (typeof catalogo)[number]) =>
+  producto.specifications.datasheet.map(({ etiqueta, valor }) => `${etiqueta}: ${valor}`);
+---
+
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="color-scheme" content="light" />
+    <meta name="robots" content="index,follow" />
+    <title>{titulo}</title>
+    <meta name="description" content={descripcion} />
+    <link rel="canonical" href={canonical} />
+    <meta property="og:type" content="website" />
+    <meta property="og:locale" content="es_ES" />
+    <meta property="og:title" content={titulo} />
+    <meta property="og:description" content={descripcion} />
+    <meta property="og:url" content={canonical} />
+    <meta name="twitter:card" content="summary" />
+    <meta name="twitter:title" content={titulo} />
+    <meta name="twitter:description" content={descripcion} />
+  </head>
+
+  <body class="bg-white text-slate-900 antialiased">
+    <header class="border-b border-slate-100 bg-white">
+      <div class="mx-auto flex max-w-7xl items-center justify-between px-5 py-5 lg:px-10">
+        <a href="/" class="text-xl font-extrabold tracking-[-0.04em] text-slate-950">LadderLand<span class="text-orange-500">.</span></a>
+        <a href="/" class="text-xs font-bold text-slate-500 transition hover:text-slate-900">Volver a la guía principal</a>
+      </div>
+    </header>
+
+    <main>
+      <section class="border-b border-slate-200 bg-slate-50">
+        <div class="mx-auto max-w-7xl px-5 py-14 lg:px-10 lg:py-20">
+          <p class="text-xs font-extrabold tracking-[0.2em] text-orange-600 uppercase">Guía de compra LadderLand</p>
+          <h1 class="mt-4 max-w-4xl text-4xl font-extrabold leading-[1.08] tracking-[-0.055em] text-slate-950 sm:text-5xl lg:text-6xl">
+            Escaleras multifuncionales de 5 metros: cuál necesitas realmente
+          </h1>
+          <p class="mt-6 max-w-2xl text-lg leading-relaxed text-slate-600">
+            Comparamos tres modelos con datos declarados por sus fabricantes y te orientamos antes de que elijas una configuración.
+          </p>
+          <a href="#calculadora" class="mt-8 inline-flex items-center rounded-xl bg-orange-500 px-6 py-4 text-base font-extrabold text-white shadow-xl shadow-orange-500/20 transition hover:bg-orange-600 focus-visible:ring-2 focus-visible:ring-orange-400 focus-visible:ring-offset-2 focus-visible:outline-none">
+            Calcular mi escalera <span class="ml-2" aria-hidden="true">→</span>
+          </a>
+        </div>
+      </section>
+
+      <section class="mx-auto max-w-7xl px-5 py-16 lg:px-10 lg:py-20">
+        <div class="max-w-3xl">
+          <h2 class="text-3xl font-extrabold tracking-[-0.04em] text-slate-950 sm:text-4xl">Cinco metros no siempre significan lo mismo</h2>
+          <p class="mt-5 text-base leading-relaxed text-slate-600">
+            En una ficha de producto, “5 metros” puede referirse a la longitud de la escalera, mientras que otra ficha puede declarar una altura de trabajo. También importa si se utiliza apoyada, en tijera, como plataforma o en otra configuración.
+          </p>
+          <p class="mt-4 text-base leading-relaxed text-slate-600">
+            Por eso no conviene convertir automáticamente la longitud nominal en una promesa de altura segura. La altura de apoyo, la altura de trabajo y la configuración utilizada deben leerse por separado y contrastarse con las instrucciones del fabricante.
+          </p>
+        </div>
+
+        <div class="mt-12 grid gap-5 md:grid-cols-3">
+          <article class="border-t-2 border-orange-500 pt-5">
+            <h3 class="text-lg font-extrabold text-slate-950">Telescópica</h3>
+            <p class="mt-2 text-sm leading-relaxed text-slate-600">La TEENO se describe como telescópica y multifunción, con 7 configuraciones declaradas y longitud máxima declarada de 5,8 m.</p>
+          </article>
+          <article class="border-t-2 border-orange-500 pt-5">
+            <h3 class="text-lg font-extrabold text-slate-950">Tres tramos</h3>
+            <p class="mt-2 text-sm leading-relaxed text-slate-600">La DRABEST declara 3 tramos, 4,90 m de longitud y hasta 5,83 m de altura de trabajo. Es la comparación más directa cuando esas magnitudes son las que necesitas revisar.</p>
+          </article>
+          <article class="border-t-2 border-orange-500 pt-5">
+            <h3 class="text-lg font-extrabold text-slate-950">4 en 1 plegable</h3>
+            <p class="mt-2 text-sm leading-relaxed text-slate-600">La TecTake declara cuatro configuraciones y una plataforma de 147 x 40 cm, pero su altura máxima declarada es 2,75 m.</p>
+          </article>
+        </div>
+      </section>
+
+      <section class="border-y border-slate-200 bg-slate-50">
+        <div class="mx-auto max-w-7xl px-5 py-16 lg:px-10 lg:py-20">
+          <div class="max-w-3xl">
+            <p class="text-xs font-extrabold tracking-[0.2em] text-orange-600 uppercase">Comparativa rápida</p>
+            <h2 class="mt-4 text-3xl font-extrabold tracking-[-0.04em] text-slate-950 sm:text-4xl">¿Qué escalera de 5 metros necesitas?</h2>
+          </div>
+
+          <div class="mt-10 overflow-x-auto rounded-2xl border border-slate-200 bg-white">
+            <table class="w-full min-w-225 border-collapse text-left text-sm">
+              <caption class="sr-only">Comparativa de escaleras multifuncionales cercanas a 5 metros</caption>
+              <thead class="bg-slate-100 text-xs font-extrabold uppercase tracking-wide text-slate-500">
+                <tr>
+                  <th class="px-5 py-4">Modelo</th>
+                  <th class="px-5 py-4">Configuración</th>
+                  <th class="px-5 py-4">Peso</th>
+                  <th class="px-5 py-4">Altura / alcance declarado</th>
+                  <th class="px-5 py-4">Característica diferencial</th>
+                  <th class="px-5 py-4">Orientación</th>
+                </tr>
+              </thead>
+              <tbody class="divide-y divide-slate-100 text-slate-700">
+                {catalogo.map((producto) => (
+                  <tr>
+                    <th scope="row" class="px-5 py-5 align-top font-extrabold text-slate-950">{producto.specifications.brand}<br /><span class="font-semibold text-slate-600">{producto.nombre}</span></th>
+                    <td class="px-5 py-5 align-top">{configuraciones(producto)}</td>
+                    <td class="px-5 py-5 align-top">{mostrar(producto.specifications.weightKg, ' kg')}</td>
+                    <td class="px-5 py-5 align-top">{alcance(producto)}</td>
+                    <td class="px-5 py-5 align-top">{diferencial(producto)}</td>
+                    <td class="px-5 py-5 align-top">{orientacion(producto)}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+          <p class="mt-4 text-xs leading-relaxed text-slate-500">La tabla resume únicamente datos presentes en el catálogo de LadderLand. “Orientación” no sustituye la ficha del fabricante ni una evaluación de riesgos.</p>
+        </div>
+      </section>
+
+      <section class="mx-auto max-w-7xl px-5 py-16 lg:px-10 lg:py-20">
+        <div class="max-w-3xl">
+          <p class="text-xs font-extrabold tracking-[0.2em] text-orange-600 uppercase">Modelos comparados</p>
+          <h2 class="mt-4 text-3xl font-extrabold tracking-[-0.04em] text-slate-950 sm:text-4xl">Tres opciones, tres puntos de partida</h2>
+        </div>
+
+        <div class="mt-10 grid gap-6 lg:grid-cols-3">
+          {catalogo.map((producto) => (
+            <article class="flex h-full flex-col overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-[0_12px_36px_rgba(15,23,42,0.05)]">
+              <div class="flex aspect-4/3 items-center justify-center overflow-hidden bg-slate-100">
+                <img src={producto.imagen} alt={producto.nombre} loading="lazy" decoding="async" class="h-full w-full object-contain" />
+              </div>
+              <div class="flex flex-1 flex-col p-6">
+                <p class="text-xs font-extrabold tracking-[0.15em] text-orange-600 uppercase">{producto.badge}</p>
+                <h3 class="mt-3 text-lg font-extrabold leading-tight tracking-[-0.03em] text-slate-950">{producto.nombre}</h3>
+                <p class="mt-3 text-sm leading-relaxed text-slate-600">{producto.tag}</p>
+                <ul class="mt-5 space-y-2 border-t border-slate-100 pt-5 text-xs leading-relaxed text-slate-600">
+                  {caracteristicas(producto).map((caracteristica) => <li>{caracteristica}</li>)}
+                </ul>
+                <div class="mt-auto pt-6">
+                  <a href={construirUrlAfiliado(producto.asin)} target="_blank" rel={AFFILIATE_LINK_REL} class="block w-full rounded-xl bg-orange-500 px-5 py-3.5 text-center text-sm font-extrabold text-white shadow-lg shadow-orange-500/20 transition hover:bg-orange-600 focus-visible:ring-2 focus-visible:ring-orange-400 focus-visible:ring-offset-2 focus-visible:outline-none">
+                    Ver en Amazon <span aria-hidden="true">→</span>
+                  </a>
+                </div>
+              </div>
+            </article>
+          ))}
+        </div>
+        <p class="mt-8 max-w-3xl text-xs leading-relaxed text-slate-500">{AFFILIATE_DISCLOSURE}</p>
+      </section>
+
+      <section id="calculadora" class="scroll-mt-6 border-y border-slate-200 bg-white py-16 lg:py-20">
+        <div class="mx-auto max-w-7xl px-5 lg:px-10">
+          <div class="mb-10 max-w-3xl">
+            <h2 class="text-3xl font-extrabold tracking-[-0.04em] text-slate-950 sm:text-4xl">¿No sabes cuál necesitas?</h2>
+            <p class="mt-4 text-base leading-relaxed text-slate-600">LadderLand puede orientarte según la altura, el tipo de trabajo y el entorno. Responde las mismas tres preguntas de la herramienta principal.</p>
+            <a href="#calculadora-formulario" class="mt-5 inline-flex text-sm font-extrabold text-orange-600 hover:text-orange-700">Encuentra tu escalera <span class="ml-2" aria-hidden="true">→</span></a>
+          </div>
+          <div id="calculadora-formulario"><Calculadora client:load /></div>
+        </div>
+      </section>
+
+      <section class="mx-auto max-w-7xl px-5 py-16 lg:px-10 lg:py-20">
+        <div class="max-w-3xl">
+          <h2 class="text-3xl font-extrabold tracking-[-0.04em] text-slate-950 sm:text-4xl">Seguridad antes de la compra</h2>
+          <p class="mt-5 text-base leading-relaxed text-slate-600">La altura nominal de una escalera no equivale automáticamente a la altura segura de trabajo. La configuración utilizada importa, y cada modelo debe utilizarse siguiendo las instrucciones del fabricante.</p>
+          <p class="mt-4 text-base leading-relaxed text-slate-600">Comprueba la capacidad de carga y las condiciones de uso del producto concreto antes de subir. La calculadora de LadderLand es orientativa y no sustituye una evaluación de riesgos.</p>
+        </div>
+      </section>
+
+      <section class="border-t border-slate-200 bg-slate-50">
+        <div class="mx-auto max-w-4xl px-5 py-16 lg:py-20">
+          <h2 class="text-3xl font-extrabold tracking-[-0.04em] text-slate-950">Preguntas frecuentes</h2>
+          <div class="mt-8 divide-y divide-slate-200">
+            <details class="py-5" open><summary class="cursor-pointer text-base font-extrabold text-slate-950">¿Qué significa que una escalera sea de 5 metros?</summary><p class="mt-3 text-sm leading-relaxed text-slate-600">Puede describir su longitud, pero no necesariamente la altura de trabajo. Hay que revisar qué magnitud declara la ficha y en qué configuración.</p></details>
+            <details class="py-5"><summary class="cursor-pointer text-base font-extrabold text-slate-950">¿Una escalera de 5 metros sirve para trabajar a 5 metros?</summary><p class="mt-3 text-sm leading-relaxed text-slate-600">No se puede asumir. La altura de apoyo, la configuración y la información específica del fabricante determinan qué alcance es apropiado.</p></details>
+            <details class="py-5"><summary class="cursor-pointer text-base font-extrabold text-slate-950">¿Qué diferencia hay entre una telescópica y una de 3 tramos?</summary><p class="mt-3 text-sm leading-relaxed text-slate-600">Son formas distintas de describir la construcción o la configuración. En este catálogo, TEENO se describe como telescópica y DRABEST como de 3 tramos; sus datos declarados no son intercambiables.</p></details>
+            <details class="py-5"><summary class="cursor-pointer text-base font-extrabold text-slate-950">¿Qué escalera conviene para trabajos sobre fachada?</summary><p class="mt-3 text-sm leading-relaxed text-slate-600">Depende de la altura, el apoyo y la configuración. La calculadora puede orientarte, pero debes comprobar las instrucciones y condiciones del modelo elegido.</p></details>
+            <details class="py-5"><summary class="cursor-pointer text-base font-extrabold text-slate-950">¿Qué escalera ocupa menos espacio?</summary><p class="mt-3 text-sm leading-relaxed text-slate-600">No hay una respuesta única con los datos disponibles. La forma de plegado y la configuración influyen, pero conviene consultar las dimensiones declaradas del modelo.</p></details>
+            <details class="py-5"><summary class="cursor-pointer text-base font-extrabold text-slate-950">¿Cómo elegir una escalera multifuncional?</summary><p class="mt-3 text-sm leading-relaxed text-slate-600">Empieza por la altura, el tipo de trabajo y el entorno. Después compara las configuraciones y las capacidades que el fabricante sí declara.</p></details>
+            <details class="py-5"><summary class="cursor-pointer text-base font-extrabold text-slate-950">¿Qué debo comprobar antes de utilizarla?</summary><p class="mt-3 text-sm leading-relaxed text-slate-600">Revisa la ficha, la capacidad de carga, la configuración seleccionada y las condiciones de uso indicadas por el fabricante.</p></details>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer class="border-t border-slate-200 bg-white">
+      <div class="mx-auto max-w-7xl px-5 py-10 lg:px-10">
+        <p class="text-sm font-semibold leading-relaxed text-slate-700">{AFFILIATE_DISCLOSURE}</p>
+        <p class="mt-4 text-xs text-slate-400"><a href="/" class="font-bold text-slate-600 hover:text-slate-900">LadderLand</a> · Información orientativa para elegir una escalera multifuncional.</p>
+      </div>
+    </footer>
+
+    <Analytics />
+  </body>
+</html>

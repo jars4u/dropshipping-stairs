@@ -1,0 +1,42 @@
+---
+import '../styles/global.css';
+import Calculadora from '../components/Calculadora.jsx';
+import Analytics from '@vercel/analytics/astro';
+import { SITE_URL } from '../lib/site.ts';
+
+const titulo = 'Calculadora de escaleras | LadderLand';
+const descripcion = 'Indica la altura, el tipo de trabajo y el entorno para orientarte hacia la escalera que mejor encaja.';
+const canonical = `${SITE_URL}/calculadora`;
+---
+
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="color-scheme" content="light" />
+    <meta name="robots" content="noindex,follow" />
+    <title>{titulo}</title>
+    <meta name="description" content={descripcion} />
+    <link rel="canonical" href={canonical} />
+  </head>
+  <body class="bg-white text-slate-900 antialiased">
+    <header class="border-b border-slate-100 bg-white">
+      <div class="mx-auto flex max-w-7xl items-center justify-between px-5 py-5 lg:px-10">
+        <a href="/" class="text-xl font-extrabold tracking-[-0.04em] text-slate-950">LadderLand<span class="text-orange-500">.</span></a>
+        <a href="/" class="text-xs font-bold text-slate-500 transition hover:text-slate-900">Volver a LadderLand</a>
+      </div>
+    </header>
+    <main class="py-12 lg:py-16">
+      <div class="mx-auto max-w-7xl px-5 lg:px-10">
+        <div class="mb-10 max-w-3xl">
+          <p class="text-xs font-extrabold tracking-[0.2em] text-orange-600 uppercase">Herramienta LadderLand</p>
+          <h1 class="mt-4 text-4xl font-extrabold tracking-tighter text-slate-950 sm:text-5xl">Encuentra tu escalera</h1>
+          <p class="mt-4 text-base leading-relaxed text-slate-600">Indica la altura, el tipo de trabajo y el entorno. La recomendación es orientativa y no sustituye las instrucciones del fabricante.</p>
+        </div>
+        <Calculadora client:load />
+      </div>
+    </main>
+    <Analytics />
+  </body>
+</html>

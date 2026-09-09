@@ -9,6 +9,7 @@
  */
 
 import { catalogo as productosEscaleras } from '../src/data/catalogo.ts';
+import { AFFILIATE_TAG } from '../src/lib/afiliado.ts';
 
 // Verificación TLS obligatoria. Si el entorno que lanza el build trae
 // NODE_TLS_REJECT_UNAUTHORIZED=0 (proxies corporativos, imágenes de CI mal
@@ -23,7 +24,6 @@ if (process.env.NODE_TLS_REJECT_UNAUTHORIZED === '0') {
   );
 }
 
-const AFILIADO = 'jars4u2-21';
 const TIMEOUT_MS = 15000;
 const REINTENTOS_404 = 2;
 const ESPERA_REINTENTO_MS = 2000;
@@ -38,7 +38,7 @@ const CABECERAS = {
   'Accept-Language': 'es-ES,es;q=0.9'
 };
 
-const urlProducto = (asin) => `https://www.amazon.es/dp/${asin}?tag=${AFILIADO}`;
+const urlProducto = (asin) => `https://www.amazon.es/dp/${asin}?tag=${AFFILIATE_TAG}`;
 
 const esperar = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 

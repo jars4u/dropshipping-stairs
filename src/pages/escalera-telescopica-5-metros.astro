@@ -1,0 +1,212 @@
+---
+import '../styles/global.css';
+import Calculadora from '../components/Calculadora.jsx';
+import Analytics from '@vercel/analytics/astro';
+import { catalogo } from '../data/catalogo.ts';
+import { AFFILIATE_DISCLOSURE, AFFILIATE_LINK_REL, construirUrlAfiliado } from '../lib/afiliado.ts';
+import { SITE_URL } from '../lib/site.ts';
+import { UNKNOWN } from '../domain/types.ts';
+
+const titulo = 'Escalera telescópica de 5 metros: cómo elegirla | LadderLand';
+const descripcion =
+  'Descubre qué significa una escalera telescópica de 5 metros, cuándo puede encajar y qué debes comprobar antes de elegirla.';
+const canonical = `${SITE_URL}/escalera-telescopica-5-metros`;
+const [teeno] = catalogo;
+
+const mostrar = (valor: unknown, sufijo = '') => (valor === UNKNOWN || valor === null ? 'No especificado' : `${valor}${sufijo}`);
+const configuraciones = (producto: (typeof catalogo)[number]) => producto.configurations.map(({ name }) => name).join(', ');
+---
+
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="color-scheme" content="light" />
+    <meta name="robots" content="index,follow" />
+    <title>{titulo}</title>
+    <meta name="description" content={descripcion} />
+    <link rel="canonical" href={canonical} />
+    <meta property="og:type" content="website" />
+    <meta property="og:locale" content="es_ES" />
+    <meta property="og:title" content={titulo} />
+    <meta property="og:description" content={descripcion} />
+    <meta property="og:url" content={canonical} />
+    <meta name="twitter:card" content="summary" />
+    <meta name="twitter:title" content={titulo} />
+    <meta name="twitter:description" content={descripcion} />
+  </head>
+
+  <body class="bg-white text-slate-900 antialiased">
+    <header class="border-b border-slate-100 bg-white">
+      <div class="mx-auto flex max-w-7xl items-center justify-between px-5 py-5 lg:px-10">
+        <a href="/" class="text-xl font-extrabold tracking-[-0.04em] text-slate-950">LadderLand<span class="text-orange-500">.</span></a>
+        <a href="/" class="text-xs font-bold text-slate-500 transition hover:text-slate-900">Volver a la guía principal</a>
+      </div>
+    </header>
+
+    <main>
+      <section class="border-b border-slate-200 bg-slate-50">
+        <div class="mx-auto max-w-7xl px-5 py-14 lg:px-10 lg:py-20">
+          <p class="text-xs font-extrabold tracking-[0.2em] text-orange-600 uppercase">Guía de compra LadderLand</p>
+          <h1 class="mt-4 max-w-4xl text-4xl font-extrabold leading-[1.08] tracking-[-0.055em] text-slate-950 sm:text-5xl lg:text-6xl">
+            Escalera telescópica de 5 metros: cómo elegirla
+          </h1>
+          <p class="mt-6 max-w-2xl text-lg leading-relaxed text-slate-600">
+            Una telescópica puede alcanzar una longitud importante y ocupar poco espacio cuando está recogida, pero la configuración y el uso previsto determinan si encaja con tu proyecto.
+          </p>
+          <a href="#calculadora" class="mt-8 inline-flex items-center rounded-xl bg-orange-500 px-6 py-4 text-base font-extrabold text-white shadow-xl shadow-orange-500/20 transition hover:bg-orange-600 focus-visible:ring-2 focus-visible:ring-orange-400 focus-visible:ring-offset-2 focus-visible:outline-none">
+            Calcular mi escalera <span class="ml-2" aria-hidden="true">→</span>
+          </a>
+        </div>
+      </section>
+
+      <section class="mx-auto max-w-7xl px-5 py-16 lg:px-10 lg:py-20">
+        <div class="max-w-3xl">
+          <h2 class="text-3xl font-extrabold tracking-[-0.04em] text-slate-950 sm:text-4xl">¿Qué significa realmente “5 metros”?</h2>
+          <p class="mt-5 text-base leading-relaxed text-slate-600">
+            En una escalera telescópica, esa cifra puede referirse a la longitud máxima del producto, no a la altura de trabajo que siempre podrás alcanzar. La altura de apoyo, la superficie y la configuración utilizada cambian la situación.
+          </p>
+          <p class="mt-4 text-base leading-relaxed text-slate-600">
+            Por eso una escalera de 5 metros no debe presentarse como una promesa de trabajo exacta a 5 metros. Hay que distinguir entre longitud de la escalera, altura de apoyo y altura de trabajo, y seguir las instrucciones del fabricante para la configuración concreta. La regla 1:4 tampoco debe trasladarse automáticamente a todas las posiciones posibles.
+          </p>
+        </div>
+
+        <div class="mt-12 grid gap-5 md:grid-cols-3">
+          <article class="border-t-2 border-orange-500 pt-5">
+            <h3 class="text-lg font-extrabold text-slate-950">Longitud de la escalera</h3>
+            <p class="mt-2 text-sm leading-relaxed text-slate-600">Es la medida declarada del producto en una determinada extensión. En TEENO, el catálogo indica una longitud máxima de 5,8 m.</p>
+          </article>
+          <article class="border-t-2 border-orange-500 pt-5">
+            <h3 class="text-lg font-extrabold text-slate-950">Altura de apoyo</h3>
+            <p class="mt-2 text-sm leading-relaxed text-slate-600">Es el punto donde se apoya la escalera. No equivale automáticamente a la longitud nominal ni a la altura a la que se trabaja.</p>
+          </article>
+          <article class="border-t-2 border-orange-500 pt-5">
+            <h3 class="text-lg font-extrabold text-slate-950">Altura de trabajo</h3>
+            <p class="mt-2 text-sm leading-relaxed text-slate-600">Es una magnitud distinta que debe estar declarada para el producto y la situación correspondiente. En TEENO no figura una altura de trabajo específica en el catálogo.</p>
+          </article>
+        </div>
+      </section>
+
+      <section class="border-y border-slate-200 bg-slate-50">
+        <div class="mx-auto max-w-7xl px-5 py-16 lg:px-10 lg:py-20">
+          <div class="max-w-3xl">
+            <p class="text-xs font-extrabold tracking-[0.2em] text-orange-600 uppercase">Decisión de compra</p>
+            <h2 class="mt-4 text-3xl font-extrabold tracking-[-0.04em] text-slate-950 sm:text-4xl">¿Cuándo tiene sentido una telescópica?</h2>
+            <p class="mt-5 text-base leading-relaxed text-slate-600">Puede ser una opción interesante cuando necesitas ajustar la longitud, transportarla con frecuencia o guardarla en un espacio limitado. No significa que sea la mejor elección para cualquier trabajo o superficie.</p>
+          </div>
+
+          <div class="mt-10 grid gap-6 md:grid-cols-2">
+            <article class="rounded-3xl border border-slate-200 bg-white p-6">
+              <h3 class="text-xl font-extrabold text-slate-950">Posibles ventajas</h3>
+              <ul class="mt-4 space-y-3 text-sm leading-relaxed text-slate-600">
+                <li>Puede facilitar el almacenamiento cuando está recogida.</li>
+                <li>Puede resultar práctica para el transporte entre ubicaciones.</li>
+                <li>Permite ajustar la longitud dentro de las posiciones permitidas.</li>
+                <li>Puede encajar cuando el espacio disponible condiciona la elección.</li>
+              </ul>
+            </article>
+            <article class="rounded-3xl border border-slate-200 bg-white p-6">
+              <h3 class="text-xl font-extrabold text-slate-950">Lo que debes comprobar</h3>
+              <ul class="mt-4 space-y-3 text-sm leading-relaxed text-slate-600">
+                <li>No toda telescópica sirve para todos los usos.</li>
+                <li>La estabilidad depende de la configuración y de la superficie.</li>
+                <li>Solo deben utilizarse las posiciones permitidas por el fabricante.</li>
+                <li>La capacidad de carga y las condiciones de uso deben revisarse para el modelo concreto.</li>
+              </ul>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="mx-auto max-w-7xl px-5 py-16 lg:px-10 lg:py-20">
+        <div class="grid gap-10 lg:grid-cols-[0.8fr_1.2fr] lg:items-start lg:gap-16">
+          <div>
+            <p class="text-xs font-extrabold tracking-[0.2em] text-orange-600 uppercase">Modelo telescópico del catálogo</p>
+            <h2 class="mt-4 text-3xl font-extrabold tracking-[-0.04em] text-slate-950 sm:text-4xl">{teeno.nombre}</h2>
+            <p class="mt-5 text-base leading-relaxed text-slate-600">{teeno.tag}</p>
+            <a href={construirUrlAfiliado(teeno.asin)} target="_blank" rel={AFFILIATE_LINK_REL} class="mt-7 inline-flex items-center rounded-xl bg-orange-500 px-6 py-4 text-sm font-extrabold text-white shadow-lg shadow-orange-500/20 transition hover:bg-orange-600 focus-visible:ring-2 focus-visible:ring-orange-400 focus-visible:ring-offset-2 focus-visible:outline-none">
+              Ver en Amazon <span class="ml-2" aria-hidden="true">→</span>
+            </a>
+          </div>
+          <div class="overflow-hidden rounded-3xl border border-slate-200 bg-slate-100">
+            <img src={teeno.imagen} alt={teeno.nombre} loading="lazy" decoding="async" class="aspect-4/3 h-full w-full object-contain" />
+          </div>
+        </div>
+
+        <div class="mt-10 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
+          <div class="border-t border-slate-200 pt-4"><p class="text-xs font-bold text-slate-500">Material</p><p class="mt-1 font-extrabold text-slate-950">{teeno.specifications.material}</p></div>
+          <div class="border-t border-slate-200 pt-4"><p class="text-xs font-bold text-slate-500">Peso</p><p class="mt-1 font-extrabold text-slate-950">{mostrar(teeno.specifications.weightKg, ' kg')}</p></div>
+          <div class="border-t border-slate-200 pt-4"><p class="text-xs font-bold text-slate-500">Longitud máxima declarada</p><p class="mt-1 font-extrabold text-slate-950">{mostrar(teeno.capabilities.maxLadderLength, ' m')}</p></div>
+          <div class="border-t border-slate-200 pt-4"><p class="text-xs font-bold text-slate-500">Configuraciones</p><p class="mt-1 font-extrabold text-slate-950">{configuraciones(teeno)}</p></div>
+        </div>
+        <p class="mt-8 max-w-3xl text-xs leading-relaxed text-slate-500">No se muestra un precio estático. La ficha consultada en Amazon puede cambiar y la altura de trabajo no está especificada en el catálogo de LadderLand.</p>
+        <p class="mt-3 max-w-3xl text-xs leading-relaxed text-slate-500">{AFFILIATE_DISCLOSURE}</p>
+      </section>
+
+      <section class="border-y border-slate-200 bg-slate-50">
+        <div class="mx-auto max-w-7xl px-5 py-16 lg:px-10 lg:py-20">
+          <div class="max-w-3xl">
+            <h2 class="text-3xl font-extrabold tracking-[-0.04em] text-slate-950 sm:text-4xl">Telescópica, 3 tramos o 4 en 1</h2>
+            <p class="mt-5 text-base leading-relaxed text-slate-600">La forma del producto orienta la decisión, pero no sustituye las especificaciones del fabricante. Esta comparación evita convertir una configuración en un ganador universal.</p>
+          </div>
+          <div class="mt-10 overflow-x-auto rounded-2xl border border-slate-200 bg-white">
+            <table class="w-full min-w-225 border-collapse text-left text-sm">
+              <caption class="sr-only">Comparación de configuraciones de escaleras</caption>
+              <thead class="bg-slate-100 text-xs font-extrabold uppercase tracking-wide text-slate-500"><tr><th class="px-5 py-4">Configuración</th><th class="px-5 py-4">Almacenamiento</th><th class="px-5 py-4">Transporte</th><th class="px-5 py-4">Versatilidad</th><th class="px-5 py-4">Tipo de trabajo</th></tr></thead>
+              <tbody class="divide-y divide-slate-100 text-slate-700">
+                <tr><th scope="row" class="px-5 py-5 align-top font-extrabold text-slate-950">Telescópica</th><td class="px-5 py-5 align-top">Puede ocupar menos espacio recogida.</td><td class="px-5 py-5 align-top">Puede facilitar el traslado si el tamaño recogido encaja.</td><td class="px-5 py-5 align-top">Depende de las posiciones declaradas para el modelo.</td><td class="px-5 py-5 align-top">Trabajos compatibles con la configuración permitida.</td></tr>
+                <tr><th scope="row" class="px-5 py-5 align-top font-extrabold text-slate-950">3 tramos</th><td class="px-5 py-5 align-top">El tamaño depende de sus tramos y de cómo se almacene.</td><td class="px-5 py-5 align-top">Conviene valorar el peso y la longitud declarados.</td><td class="px-5 py-5 align-top">Puede ofrecer distintas posiciones según el modelo.</td><td class="px-5 py-5 align-top">La DRABEST declara uso como autónoma, de tijera y configuración A con extensión.</td></tr>
+                <tr><th scope="row" class="px-5 py-5 align-top font-extrabold text-slate-950">4 en 1 / multifunción</th><td class="px-5 py-5 align-top">El plegado depende del diseño concreto.</td><td class="px-5 py-5 align-top">Hay que consultar medidas y peso del producto.</td><td class="px-5 py-5 align-top">La TecTake declara cuatro configuraciones.</td><td class="px-5 py-5 align-top">Puede encajar en trabajos compatibles con escalera, tijera o andamio declarados.</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <a href="/escalera-multifuncional-5-metros" class="mt-6 inline-flex text-sm font-extrabold text-orange-600 hover:text-orange-700">Ver la comparativa multifuncional completa <span class="ml-2" aria-hidden="true">→</span></a>
+        </div>
+      </section>
+
+      <section id="calculadora" class="scroll-mt-6 border-b border-slate-200 bg-white py-16 lg:py-20">
+        <div class="mx-auto max-w-7xl px-5 lg:px-10">
+          <div class="mb-10 max-w-3xl">
+            <h2 class="text-3xl font-extrabold tracking-[-0.04em] text-slate-950 sm:text-4xl">¿La telescópica es realmente la que necesitas?</h2>
+            <p class="mt-4 text-base leading-relaxed text-slate-600">Indica la altura, el tipo de trabajo y el entorno y LadderLand te orientará hacia el modelo que mejor encaja.</p>
+            <a href="#calculadora-formulario" class="mt-5 inline-flex text-sm font-extrabold text-orange-600 hover:text-orange-700">Encuentra tu escalera <span class="ml-2" aria-hidden="true">→</span></a>
+          </div>
+          <div id="calculadora-formulario"><Calculadora client:load /></div>
+        </div>
+      </section>
+
+      <section class="mx-auto max-w-7xl px-5 py-16 lg:px-10 lg:py-20">
+        <div class="max-w-3xl">
+          <h2 class="text-3xl font-extrabold tracking-[-0.04em] text-slate-950 sm:text-4xl">Seguridad y configuración</h2>
+          <p class="mt-5 text-base leading-relaxed text-slate-600">Revisa las instrucciones del fabricante y respeta las configuraciones permitidas. Comprueba que la superficie sea adecuada y estable, respeta la capacidad de carga y no conviertas la altura nominal en una promesa de altura segura de trabajo.</p>
+          <p class="mt-4 text-base leading-relaxed text-slate-600">La calculadora de LadderLand es orientativa y no sustituye una evaluación de riesgos ni las instrucciones del fabricante.</p>
+        </div>
+      </section>
+
+      <section class="border-t border-slate-200 bg-slate-50">
+        <div class="mx-auto max-w-4xl px-5 py-16 lg:py-20">
+          <h2 class="text-3xl font-extrabold tracking-[-0.04em] text-slate-950">Preguntas frecuentes</h2>
+          <div class="mt-8 divide-y divide-slate-200">
+            <details class="py-5" open><summary class="cursor-pointer text-base font-extrabold text-slate-950">¿Qué altura alcanza una escalera telescópica de 5 metros?</summary><p class="mt-3 text-sm leading-relaxed text-slate-600">La cifra puede referirse a su longitud máxima. La altura de trabajo depende de la configuración y de lo que declare el fabricante.</p></details>
+            <details class="py-5"><summary class="cursor-pointer text-base font-extrabold text-slate-950">¿Qué diferencia hay entre altura de escalera y altura de trabajo?</summary><p class="mt-3 text-sm leading-relaxed text-slate-600">La longitud describe el producto; la altura de trabajo describe una situación de uso. No son medidas intercambiables.</p></details>
+            <details class="py-5"><summary class="cursor-pointer text-base font-extrabold text-slate-950">¿Una escalera telescópica es adecuada para exteriores?</summary><p class="mt-3 text-sm leading-relaxed text-slate-600">Depende del modelo, la superficie y las instrucciones del fabricante. El catálogo actual no declara compatibilidad específica por entorno para TEENO.</p></details>
+            <details class="py-5"><summary class="cursor-pointer text-base font-extrabold text-slate-950">¿Qué ventajas tiene frente a una escalera de 3 tramos?</summary><p class="mt-3 text-sm leading-relaxed text-slate-600">Puede facilitar el almacenamiento, el transporte o el ajuste de longitud, pero una de 3 tramos puede encajar mejor según el trabajo y la configuración necesaria.</p></details>
+            <details class="py-5"><summary class="cursor-pointer text-base font-extrabold text-slate-950">¿Qué debo mirar antes de comprar una escalera telescópica?</summary><p class="mt-3 text-sm leading-relaxed text-slate-600">Revisa longitud, altura de trabajo si está declarada, configuraciones permitidas, carga, peso e instrucciones del fabricante.</p></details>
+            <details class="py-5"><summary class="cursor-pointer text-base font-extrabold text-slate-950">¿Una escalera telescópica ocupa poco espacio?</summary><p class="mt-3 text-sm leading-relaxed text-slate-600">Puede ocupar menos espacio cuando está recogida, pero debes consultar las dimensiones reales del modelo concreto.</p></details>
+            <details class="py-5"><summary class="cursor-pointer text-base font-extrabold text-slate-950">¿Cómo sé qué altura necesito?</summary><p class="mt-3 text-sm leading-relaxed text-slate-600">Empieza por el punto de trabajo, el tipo de tarea y el entorno. La calculadora puede orientarte y después debes contrastar el resultado con la ficha del modelo.</p></details>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer class="border-t border-slate-200 bg-white">
+      <div class="mx-auto max-w-7xl px-5 py-10 lg:px-10">
+        <p class="text-sm font-semibold leading-relaxed text-slate-700">{AFFILIATE_DISCLOSURE}</p>
+        <p class="mt-4 text-xs text-slate-400"><a href="/" class="font-bold text-slate-600 hover:text-slate-900">LadderLand</a> · Información orientativa para elegir una escalera telescópica.</p>
+      </div>
+    </footer>
+
+    <Analytics />
+  </body>
+</html>

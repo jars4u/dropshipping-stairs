@@ -357,5 +357,6 @@ export const MAX_ALTERNATIVES = 2;
 /** 3.5 -> "3,5" */
 export const formatAltura = (metros: number): string => metros.toFixed(1).replace('.', ',');
 
-export const construirUrlAfiliado = (asin: string, afiliado = 'jars4u2-21'): string =>
-  `https://www.amazon.es/dp/${asin}?tag=${afiliado}`;
+// El enlace de afiliado vive en src/lib/afiliado.ts: un solo sitio para el tag,
+// la declaración legal y el rel de los enlaces.
+export { AFFILIATE_DISCLOSURE, AFFILIATE_LINK_REL, construirUrlAfiliado } from '../lib/afiliado.ts';
