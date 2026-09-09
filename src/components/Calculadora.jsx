@@ -174,7 +174,7 @@ function EnlaceProducto({ product, position, className, children }) {
 /** Panel de la derecha antes de pedir la recomendación. */
 function ResultadoPendiente() {
   return (
-    <div className="rounded-4xl border border-dashed border-slate-300 bg-slate-50/70 p-8 text-center lg:p-12">
+    <div className="h-full rounded-4xl border border-dashed border-slate-300 bg-slate-50/70 p-8 pt-12 text-center lg:p-12 lg:pt-16">
       <span className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-white text-2xl text-orange-500 shadow-sm" aria-hidden="true">
         ↗
       </span>
@@ -627,7 +627,7 @@ export default function Calculadora() {
 
   return (
     <section className="mx-auto max-w-7xl px-5 lg:px-10">
-      <div className="grid items-start gap-6 lg:grid-cols-2 lg:gap-8">
+      <div className="grid items-stretch gap-6 lg:grid-cols-2 lg:gap-8">
         {/* ---------------------------------------------------- Asistente */}
         <form
           onSubmit={alSubir}
@@ -764,7 +764,7 @@ export default function Calculadora() {
         </form>
 
         {/* ---------------------------------------------------- Resultado */}
-        <div ref={panelResultado} aria-live="polite" aria-atomic="false">
+        <div ref={panelResultado} className="h-full" aria-live="polite" aria-atomic="false">
           <LimiteDeError fallback={<ResultadoError />}>
             {fallo && <ResultadoError />}
             {!fallo && !resultado && <ResultadoPendiente />}
